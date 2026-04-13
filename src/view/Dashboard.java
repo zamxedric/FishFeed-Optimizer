@@ -47,13 +47,13 @@ public class Dashboard extends JPanel {
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
 
-        String svg = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Sidebar.svg";
+        String svg = "src\\display_components\\Sidebar.svg";
         panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
         
-        String logoIcon = ("C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AppLogo.svg");
+        String logoIcon = ("src\\display_components\\AppLogo.svg");
         logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
 
-        ImageIcon panelIcon = new ImageIcon("C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\UpperPanel.png");
+        ImageIcon panelIcon = new ImageIcon("src\\display_components\\UpperPanel.png");
         panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 34, 817, 392);
 
         ImageIcon statIcon5 = new ImageIcon("src\\display_components\\RecentLog.png");

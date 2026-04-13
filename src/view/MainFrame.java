@@ -2,7 +2,6 @@ package view;
 
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -31,7 +30,7 @@ public class MainFrame extends JFrame{
         setResizable(false);
         setUndecorated(true);
 
-        ImageIcon background = new ImageIcon("C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Background.png");
+        ImageIcon background = new ImageIcon("src\\display_components\\Background.png");
         bgLabel = DisplayHelper.parsingImg(background, 0, 0, 1280, 720);
         this.setContentPane(bgLabel);
 
@@ -91,10 +90,6 @@ public class MainFrame extends JFrame{
 
     public void addExitButtonListener(ActionListener listener){
         exitButton.addActionListener(listener);
-    }
-
-    public void addWindowListener(WindowAdapter adapter){
-        super.addWindowListener(adapter);
     }
 
     public int showReminderPopUp(List<String> unloggedBatches){

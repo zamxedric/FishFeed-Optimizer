@@ -16,7 +16,6 @@ import util.DisplayHelper;
 import util.ValidateInput;
 
 public class AddBatch extends JPanel{
-    //@SuppressWarnings("unused")
     private JLabel label[] = new JLabel[8];
     private JLabel panel[] = new JLabel[4];
     private JLabel txtLabel[] = new JLabel[6];
@@ -29,34 +28,34 @@ public class AddBatch extends JPanel{
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
         
-        String svg = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Sidebar.svg";
+        String svg = "src\\display_components\\Sidebar.svg";
         panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
 
-        String logoIcon = ("C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AppLogo.svg");
+        String logoIcon = ("src\\display_components\\AppLogo.svg");
         logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
 
-        ImageIcon panelIcon = new ImageIcon("C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddLogPane.png");
+        ImageIcon panelIcon = new ImageIcon("src\\display_components\\AddLogPane.png");
         panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 84, 817, 531);
 
         ImageIcon panelIcon2 = new ImageIcon("src\\display_components\\InputPanelX.png");
         panel[2] = DisplayHelper.parsingImg(panelIcon2, 490, 224, 673, 266);
 
-        String svg2 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchClicked.svg";
+        String svg2 = "src\\display_components\\AddBatchClicked.svg";
         panel[3] = DisplayHelper.parsingSvg(svg2, 32, 487, 301, 47);
 
-        String svg3 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\DashboardNotClicked.svg";
+        String svg3 = "src\\display_components\\DashboardNotClicked.svg";
         button[0] = DisplayHelper.buttonSvg(svg3, 43, 187, 311, 47);
         button[0].addActionListener(e -> parent.switchPage("Dashboard"));
 
-        String svg4 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Daily_Logs_Not_Clicked.svg";
+        String svg4 = "src\\display_components\\Daily_Logs_Not_Clicked.svg";
         button[1] = DisplayHelper.buttonSvg(svg4, 43, 287, 311, 47);
         button[1].addActionListener(e -> parent.switchPage("DailyLogs"));
 
-        String svg5 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Analytics_NotClicked.svg";
+        String svg5 = "src\\display_components\\Analytics_NotClicked.svg";
         button[2] = DisplayHelper.buttonSvg(svg5, 43, 387, 301, 47);
         button[2].addActionListener(e -> parent.switchPage("Analytics"));
 
-        String svg6 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\Bi_NotClicked.svg";
+        String svg6 = "src\\display_components\\Bi_NotClicked.svg";
         button[3] = DisplayHelper.buttonSvg(svg6, 43, 587, 301, 47);
         button[3].addActionListener(e -> parent.switchPage("BiWeeklySample"));
 
@@ -92,17 +91,17 @@ public class AddBatch extends JPanel{
         txtDate.setText(today.format(formatter));
 
         //Textfield Appearance
-        String textSvg = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt2.svg";
+        String textSvg = "src\\display_components\\AddBatchTxt2.svg";
         txtLabel[0] = DisplayHelper.parsingSvg(textSvg, 620, 175, 177, 37);
-        String textSvg2 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt2.svg";
+        String textSvg2 = "src\\display_components\\AddBatchTxt2.svg";
         txtLabel[1] = DisplayHelper.parsingSvg(textSvg2, 990, 175, 177, 37);
-        String textSvg3 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt.svg";
+        String textSvg3 = "src\\display_components\\AddBatchTxt.svg";
         txtLabel[2] = DisplayHelper.parsingSvg(textSvg3, 510, 269, 259, 37);        
-        String textSvg4 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt.svg";
+        String textSvg4 = "src\\display_components\\AddBatchTxt.svg";
         txtLabel[3] = DisplayHelper.parsingSvg(textSvg4, 875, 269, 259, 37);        
-        String textSvg5 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt.svg";
+        String textSvg5 = "src\\display_components\\AddBatchTxt.svg";
         txtLabel[4] = DisplayHelper.parsingSvg(textSvg5, 510, 349, 259, 37);
-        String textSvg6 = "C:\\Users\\user\\Documents\\Java Projects\\Fish Yield Forecaster\\Fish Yield Forecaster\\src\\display_components\\AddBatchTxt.svg";
+        String textSvg6 = "src\\display_components\\AddBatchTxt.svg";
         txtLabel[5] = DisplayHelper.parsingSvg(textSvg6, 875, 349, 259, 37);    
 
         //Textfield

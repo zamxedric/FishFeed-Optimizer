@@ -7,7 +7,3 @@ public class Main {
         new AppController(frame);
     }
 }
-
-
-
-

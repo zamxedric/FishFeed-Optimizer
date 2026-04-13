@@ -2,8 +2,6 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,13 +38,6 @@ public class AppController {
         this.view.addExitButtonListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                attemptExit();
-            }
-        });
-
-        this.view.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e){
                 attemptExit();
             }
         });
@@ -151,7 +142,7 @@ public class AppController {
     }
 
     private void deleteBatch(FishBatch batch){
-        int confirm = JOptionPane.showConfirmDialog(view, "Are you sure you want to delete " + batch.getPondName(),
+        int confirm = JOptionPane.showConfirmDialog(view, "Are you sure you want to delete " + batch.getPondName() + "\nAll saved logs will be deleted",
         "Delete Batch", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {

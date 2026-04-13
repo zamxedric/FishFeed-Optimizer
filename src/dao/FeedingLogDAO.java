@@ -27,19 +27,20 @@ public class FeedingLogDAO {
     }
 }
 
-    public DailyFeedLog getLogById(int id)throws SQLException{
-        String sql = "SELECT * FROM daily_logs WHERE log_id = ?";
-        DailyFeedLog log = null;
+    public List<DailyFeedLog> getLogByBatch(int batchId)throws SQLException{
+        String sql = "SELECT * FROM daily_logs WHERE batch_id = ?";
+        List<DailyFeedLog> logs = new ArrayList<>();
+
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
-            stm.setInt(1, id);
+            stm.setInt(1, batchId);
 
             try(ResultSet rs = stm.executeQuery()){
-                if(rs.next()){
+                while(rs.next()){
 
-                log = mapRowDailyFeedLog(rs);
-
+                DailyFeedLog log = mapRowDailyFeedLog(rs);
+                logs.add(log);
                 }
-                return log;
+                return logs;
             }
         }
     }

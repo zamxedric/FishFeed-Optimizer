@@ -185,6 +185,7 @@ public class Dashboard extends JPanel {
 
         rowPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+        SamplingRecordDAO recordDAO = new SamplingRecordDAO();
         rowPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -199,9 +200,8 @@ public class Dashboard extends JPanel {
                 selectedBatch = batch; 
                 
                 double currentWeight;
-            
+
                 try {
-                    SamplingRecordDAO recordDAO = new SamplingRecordDAO();
                     FeedingLogDAO feedingLogDAO = new FeedingLogDAO();
                     SamplingRecord latest = recordDAO.getLatestSample(selectedBatch.getId());
             
@@ -215,7 +215,17 @@ public class Dashboard extends JPanel {
                 }
             }});
 
-        double progress = mathEngine.progressValue(batch.getTargetWeight(), batch.getAvgWeightPerSample(), batch.getCurrentWeight());
+        double currentWeightToDisplay = batch.getAvgWeightPerSample(); 
+        try {
+            SamplingRecord latest = recordDAO.getLatestSample(batch.getId());
+            if (latest != null) {
+                currentWeightToDisplay = latest.getAvgWeightSample();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+            
+        double progress = mathEngine.progressValue(batch.getTargetWeight(), batch.getAvgWeightPerSample(), currentWeightToDisplay);
 
         JLabel pondName = DisplayHelper.tableLabel(batch.getPondName(), 20, 20, 15, 150, 28);
         JLabel species = DisplayHelper.tableLabel("Bangus", 20, 150, 15, 150, 28);

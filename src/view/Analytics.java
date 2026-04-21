@@ -10,7 +10,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.jfree.chart.JFreeChart;
@@ -114,15 +113,16 @@ public class Analytics extends JPanel{
         ComboItem selectedBatch = (ComboItem) cbBatchName.getSelectedItem();
 
         if(selectedBatch == null){
-            JOptionPane.showMessageDialog(this, "Please select a Batch", "Batch Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         try{
             MathEngine mathEngine = new MathEngine();
             FishBatch batch = controller.getBatchDAO().getBatchById(selectedBatch.getId());
+            double total_cost_by_batch = controller.getLogDAO().getTotalFeedByBatch(selectedBatch.getId()) * controller.getLogDAO().getTotalCostByBatch(selectedBatch.getId());
 
             label[2].setText("Total Feed: " + String.format("%.2f kg", controller.getLogDAO().getTotalFeedByBatch(selectedBatch.getId())));
-            label[3].setText("Total Cost: ₱" + String.format("%.2f Php", controller.getLogDAO().getTotalCostByBatch(selectedBatch.getId())));
+            label[3].setText("Total Cost: ₱" + String.format("%.2f Php", total_cost_by_batch));
             label[5].setText("" + String.format("%.2f", mathEngine.getLatestMovingFCR(batch)));
             if(mathEngine.getLatestMovingFCR(batch) > 2.4){
                 label[7].setText("Critical");

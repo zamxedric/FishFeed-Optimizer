@@ -57,20 +57,15 @@ public class FeedingLogDAO {
         }
     }
 
-    public List<DailyFeedLog> getRecentLogs(LocalDate now, LocalDate yesterday)throws SQLException{
-        String sql = "SELECT * FROM daily_logs WHERE log_date BETWEEN ? AND ?";
+    public List<DailyFeedLog> getRecentLogs()throws SQLException{
+        String sql = "SELECT * FROM daily_logs ORDER BY log_date DESC LIMIT 10";
         List<DailyFeedLog> logs = new ArrayList<>();
-        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
-            stm.setObject(1, yesterday);
-            stm.setObject(2, now);
-
-            try(ResultSet rs = stm.executeQuery()){
-                while(rs.next()){
-                    DailyFeedLog log = mapRowDailyFeedLog(rs);
-                    logs.add(log);
-                }
-                return logs;
+        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql); ResultSet rs = stm.executeQuery()){
+            while(rs.next()){
+                DailyFeedLog log = mapRowDailyFeedLog(rs);
+                logs.add(log);
             }
+            return logs;
         }
     }
 

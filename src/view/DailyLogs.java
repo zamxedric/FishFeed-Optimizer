@@ -85,7 +85,7 @@ public class DailyLogs extends JPanel{
         label[3] = DisplayHelper.fieldLabel(this,"Amount given(kg):", 20, 870, 144, 203, 28);
         label[4] = DisplayHelper.fieldLabel(this,"Feed Cost per kg:", 20, 540, 224, 203, 28);
         label[5] = DisplayHelper.fieldLabel(this,"Water temp:", 20, 870, 224, 203, 28);
-        label[6] = DisplayHelper.fieldLabel(this, "Mortality", 20, 710, 304, 203, 28);
+        label[6] = DisplayHelper.fieldLabel(this, "Mortality:", 20, 710, 304, 203, 28);
 
         label[7] = DisplayHelper.fieldLabel(this,"Recent Logs", 24, 440, 450, 203, 28);
         label[8] = DisplayHelper.fieldLabel(this,"Date", 20, 440, 505, 96, 28);
@@ -133,6 +133,7 @@ public class DailyLogs extends JPanel{
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
 
         loadRecentLogs();
         this.add(scrollPane);
@@ -183,9 +184,7 @@ public class DailyLogs extends JPanel{
 
     public void loadRecentLogs(){
         try {
-            LocalDate today = LocalDate.now();
-            LocalDate yesterday = today.minusDays(1);
-            List<DailyFeedLog> logs = feedLogDAO.getRecentLogs(today, yesterday);
+            List<DailyFeedLog> logs = feedLogDAO.getRecentLogs();
 
             batchesContainer.removeAll();
 

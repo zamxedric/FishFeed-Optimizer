@@ -130,14 +130,16 @@ public class FeedingLogDAO {
     }
 
     public double getTotalCostByBatch(int batchId) throws SQLException{
-        String sql = "SELECT SUM(feed_cost_kg) AS total_cost FROM daily_logs WHERE batch_id = ?";
+        String sql = "SELECT COUNT(feed_cost_kg) AS avg_feed_price, SUM(feed_cost_kg) AS total_cost FROM daily_logs WHERE batch_id = ?";
         double totalCost = 0.0;
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setInt(1, batchId);
 
             try(ResultSet rs = stm.executeQuery()){
                 if(rs.next()){
-                    totalCost = rs.getDouble("total_cost");
+                    double tempTotalCost = rs.getDouble("total_cost");
+                    int totalNumberPrice =  rs.getInt("avg_feed_price");
+                    totalCost = tempTotalCost/totalNumberPrice; 
                 }
             }
             return totalCost;

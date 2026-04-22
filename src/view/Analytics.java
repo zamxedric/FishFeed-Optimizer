@@ -122,7 +122,7 @@ public class Analytics extends JPanel{
             double total_cost_by_batch = controller.getLogDAO().getTotalFeedByBatch(selectedBatch.getId()) * controller.getLogDAO().getTotalCostByBatch(selectedBatch.getId());
 
             label[2].setText("Total Feed: " + String.format("%.2f kg", controller.getLogDAO().getTotalFeedByBatch(selectedBatch.getId())));
-            label[3].setText("Total Cost: ₱" + String.format("%.2f Php", total_cost_by_batch));
+            label[3].setText("Total Cost: ₱" + String.format("%.2f", total_cost_by_batch));
             label[5].setText("" + String.format("%.2f", mathEngine.getLatestMovingFCR(batch)));
             if(mathEngine.getLatestMovingFCR(batch) > 2.4){
                 label[7].setText("Critical");

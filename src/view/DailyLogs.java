@@ -68,7 +68,7 @@ public class DailyLogs extends JPanel{
         button[4] = DisplayHelper.buttonSvg(svg7, 430, 390, 250, 42);
         button[4].addActionListener(e -> {
             button[4].setEnabled(false);
-            Timer timer = new Timer(5000, event -> {
+            Timer timer = new Timer(3000, event -> {
                 button[4].setEnabled(true);
             });
             timer.setRepeats(false);

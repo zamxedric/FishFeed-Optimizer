@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import model.SamplingRecord;
 import util.ComboItem;
@@ -68,6 +69,11 @@ public class BiWeeklySample extends JPanel{
         button[4] = DisplayHelper.buttonSvg(svg7, 430, 555, 250, 42);
         button[4].addActionListener(e -> {
             button[4].setEnabled(false);
+            Timer timer = new Timer(3000, event -> {
+                button[4].setEnabled(true);
+            });
+            timer.setRepeats(false);
+            timer.start();
         });
 
         String svg8 = "src\\display_components\\ClearLog.svg";
@@ -83,7 +89,7 @@ public class BiWeeklySample extends JPanel{
         label[4].setForeground(new Color(0x000404));
         label[5] = DisplayHelper.fieldLabel(this, "Number of Fish:", 20, 535, 350, 322, 28);
         label[5].setForeground(new Color(0x000404));
-        label[6] = DisplayHelper.fieldLabel(this, "Total Weight:", 20, 535, 420, 322, 28);
+        label[6] = DisplayHelper.fieldLabel(this, "Total Weight(grams):", 20, 535, 420, 322, 28);
         label[6].setForeground(new Color(0x000404));
 
         txtDate = DisplayHelper.fieldLabel(this,null, 18, 540, 315, 115, 28);

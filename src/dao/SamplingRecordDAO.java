@@ -55,6 +55,18 @@ public class SamplingRecordDAO {
         }
     }
 
+    public List<SamplingRecord> getSamplingRecords()throws SQLException{
+        String sql = "SELECT * FROM sampling_records ORDER BY sample_date DESC LIMIT 10";
+        List<SamplingRecord> records = new ArrayList<>();
+        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql); ResultSet rs = stm.executeQuery()){
+            while(rs.next()){
+                SamplingRecord record = mapRowSamplingRecord(rs);
+                records.add(record);
+            }
+            return records;
+        }   
+    }
+
     private SamplingRecord mapRowSamplingRecord(ResultSet rs)throws SQLException{
         return new SamplingRecord(
             rs.getInt("sample_id"),

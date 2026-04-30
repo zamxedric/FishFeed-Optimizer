@@ -43,6 +43,7 @@ public class AppController {
         });
 
         this.view.getAnalyticsPanel().setController(this);
+        this.view.getBiWeeklySamplePanel().setController(this);
 
         this.view.getDailyLogsPanel().getSaveButton().addActionListener(e -> saveDailyLog());
         this.view.getAddBatchPanel().getSaveButton().addActionListener(e -> saveAddBatch());

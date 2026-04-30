@@ -158,7 +158,7 @@ public class BiWeeklySample extends JPanel{
                 label[i].setVisible(false);
             }
             for (int i = 4; i <= 5; i++) {
-                button[i].setVisible(true);
+                button[i].setVisible(false);
             }
             txtDate.setVisible(false);
             loadSamplingHistory();

@@ -5,11 +5,11 @@ import java.awt.Dimension;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import model.FishBatch;
 import util.DisplayHelper;
@@ -27,46 +27,33 @@ public class AddBatch extends JPanel{
         setLayout(null);
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
-        
-        String svg = "src\\display_components\\Sidebar.svg";
-        panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
+    
+        panel[0] = DisplayHelper.parsingSvg("/resources/images/Sidebar.svg", 0, 0, 375, 720);
+        logo = DisplayHelper.parsingSvg("/resources/images/AppLogo.svg", 20, 44, 284, 76);
 
-        String logoIcon = ("src\\display_components\\AppLogo.svg");
-        logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
+        panel[1] = DisplayHelper.parsingImg("/resources/images/AddLogPane.png", 420, 84, 817, 531);
 
-        ImageIcon panelIcon = new ImageIcon("src\\display_components\\AddLogPane.png");
-        panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 84, 817, 531);
+        panel[2] = DisplayHelper.parsingImg("/resources/images/InputPanelX.png", 490, 224, 673, 266);
 
-        ImageIcon panelIcon2 = new ImageIcon("src\\display_components\\InputPanelX.png");
-        panel[2] = DisplayHelper.parsingImg(panelIcon2, 490, 224, 673, 266);
+        panel[3] = DisplayHelper.parsingSvg("/resources/images/AddBatchClicked.svg", 32, 487, 301, 47);
 
-        String svg2 = "src\\display_components\\AddBatchClicked.svg";
-        panel[3] = DisplayHelper.parsingSvg(svg2, 32, 487, 301, 47);
+        button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/DashboardNotClicked.svg", 187, "Dashboard");
+        button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
+        button[2] = DisplayHelper.setupSidebar(parent, "/resources/images/Analytics_NotClicked.svg", 387, "Analytics");
+        button[3] = DisplayHelper.setupSidebar(parent, "/resources/images/Bi_NotClicked.svg", 587, "BiWeeklySample");
 
-        String svg3 = "src\\display_components\\DashboardNotClicked.svg";
-        button[0] = DisplayHelper.buttonSvg(svg3, 43, 187, 311, 47);
-        button[0].addActionListener(e -> parent.switchPage("Dashboard"));
-
-        String svg4 = "src\\display_components\\Daily_Logs_Not_Clicked.svg";
-        button[1] = DisplayHelper.buttonSvg(svg4, 43, 287, 311, 47);
-        button[1].addActionListener(e -> parent.switchPage("DailyLogs"));
-
-        String svg5 = "src\\display_components\\Analytics_NotClicked.svg";
-        button[2] = DisplayHelper.buttonSvg(svg5, 43, 387, 301, 47);
-        button[2].addActionListener(e -> parent.switchPage("Analytics"));
-
-        String svg6 = "src\\display_components\\Bi_NotClicked.svg";
-        button[3] = DisplayHelper.buttonSvg(svg6, 43, 587, 301, 47);
-        button[3].addActionListener(e -> parent.switchPage("BiWeeklySample"));
-
-        String svg7 = "src\\display_components\\SaveButton.svg";
-        button[4] = DisplayHelper.buttonSvg(svg7, 430, 505, 250, 42);
+        button[4] = DisplayHelper.buttonSvg("/resources/images/SaveButton.svg", 430, 505, 250, 42);
         button[4].addActionListener(e -> {
-            //button[4].setEnabled(false);
+            button[4].setEnabled(false);
+            button[4].setEnabled(false);
+            Timer timer = new Timer(3000, event -> {
+                button[4].setEnabled(true);
+            });
+            timer.setRepeats(false);
+            timer.start();
         });
 
-        String svg8 = "src\\display_components\\ClearLog.svg";
-        button[5] = DisplayHelper.buttonSvg(svg8, 980, 505, 250, 42);
+        button[5] = DisplayHelper.buttonSvg("/resources/images/ClearLog.svg", 980, 505, 250, 42);
         button[5].addActionListener(e -> clearField());
 
         label[0] = DisplayHelper.fieldLabel(this,"Create New Pond Batch", 24, 695, 94, 322, 28);
@@ -91,18 +78,12 @@ public class AddBatch extends JPanel{
         txtDate.setText(today.format(formatter));
 
         //Textfield Appearance
-        String textSvg = "src\\display_components\\AddBatchTxt2.svg";
-        txtLabel[0] = DisplayHelper.parsingSvg(textSvg, 620, 175, 177, 37);
-        String textSvg2 = "src\\display_components\\AddBatchTxt2.svg";
-        txtLabel[1] = DisplayHelper.parsingSvg(textSvg2, 990, 175, 177, 37);
-        String textSvg3 = "src\\display_components\\AddBatchTxt.svg";
-        txtLabel[2] = DisplayHelper.parsingSvg(textSvg3, 510, 269, 259, 37);        
-        String textSvg4 = "src\\display_components\\AddBatchTxt.svg";
-        txtLabel[3] = DisplayHelper.parsingSvg(textSvg4, 875, 269, 259, 37);        
-        String textSvg5 = "src\\display_components\\AddBatchTxt.svg";
-        txtLabel[4] = DisplayHelper.parsingSvg(textSvg5, 510, 349, 259, 37);
-        String textSvg6 = "src\\display_components\\AddBatchTxt.svg";
-        txtLabel[5] = DisplayHelper.parsingSvg(textSvg6, 875, 349, 259, 37);    
+        txtLabel[0] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt2.svg", 620, 175, 177, 37);
+        txtLabel[1] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt2.svg", 990, 175, 177, 37);
+        txtLabel[2] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt.svg", 510, 269, 259, 37);        
+        txtLabel[3] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt.svg", 875, 269, 259, 37);        
+        txtLabel[4] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt.svg", 510, 349, 259, 37);
+        txtLabel[5] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt.svg", 875, 349, 259, 37);    
 
         //Textfield
         txt[0] = DisplayHelper.textField(625, 175, 172, 37);

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,37 +39,20 @@ public class Analytics extends JPanel{
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
         
-        String svg = "src\\display_components\\Sidebar.svg";
-        panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
+        panel[0] = DisplayHelper.parsingSvg("/resources/images/Sidebar.svg", 0, 0, 375, 720);
+        logo = DisplayHelper.parsingSvg("/resources/images/AppLogo.svg", 20, 44, 284, 76);
 
-        String logoIcon = ("src\\display_components\\AppLogo.svg");
-        logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
-
-        ImageIcon panelIcon = new ImageIcon("src\\display_components\\ChartComp.png");
-        panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 84, 810, 333);
+        panel[1] = DisplayHelper.parsingImg("/resources/images/ChartComp.png", 420, 84, 810, 333);
         
-        ImageIcon panelIcon2 = new ImageIcon("src\\display_components\\SummaryPanel.png");
-        panel[2] = DisplayHelper.parsingImg(panelIcon2, 420, 394, 810, 333);
+        panel[2] = DisplayHelper.parsingImg("/resources/images/SummaryPanel.png", 420, 394, 810, 333);
 
-        String svg2 = "src\\display_components\\AnalyticsClicked.svg";
-        panel[3] = DisplayHelper.parsingSvg(svg2, 32, 387, 301, 47);
+        panel[3] = DisplayHelper.parsingSvg("/resources/images/AnalyticsClicked.svg", 32, 387, 301, 47);
 
-        String svg3 = "src\\display_components\\DashboardNotClicked.svg";
-        button[0] = DisplayHelper.buttonSvg(svg3, 43, 187, 301, 47);
-        button[0].addActionListener(e -> parent.switchPage("Dashboard"));
-
-        String svg4 = "src\\display_components\\Daily_Logs_Not_Clicked.svg";
-        button[1] = DisplayHelper.buttonSvg(svg4, 43, 287, 301, 47);
-        button[1].addActionListener(e -> parent.switchPage("DailyLogs"));
-
-        String svg5 = "src\\display_components\\Add_NotClicked.svg";
-        button[2] = DisplayHelper.buttonSvg(svg5, 43, 487, 301, 47);
-        button[2].addActionListener(e -> parent.switchPage("AddBatch"));
-
-        String svg6 = "src\\display_components\\Bi_NotClicked.svg";
-        button[3] = DisplayHelper.buttonSvg(svg6, 43, 587, 301, 47);
-        button[3].addActionListener(e -> parent.switchPage("BiWeeklySample"));
-
+        button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/DashboardNotClicked.svg", 187, "Dashboard");
+        button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
+        button[2] = DisplayHelper.setupSidebar(parent, "/resources/images/Add_NotClicked.svg", 487, "AddBatch");
+        button[3] = DisplayHelper.setupSidebar(parent, "/resources/images/Bi_NotClicked.svg", 587, "BiWeeklySample");
+        
         cbBatchName = DisplayHelper.jComboBox(610, 89, 165, 36);
         this.add(cbBatchName);
         this.setComponentZOrder(cbBatchName, 0);

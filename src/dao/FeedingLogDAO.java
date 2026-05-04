@@ -25,7 +25,7 @@ public class FeedingLogDAO {
         stm.setInt(7, log.getMortality());
         return stm.executeUpdate() > 0;
     }
-}
+    }
 
     public List<DailyFeedLog> getLogByBatch(int batchId)throws SQLException{
         String sql = "SELECT * FROM daily_logs WHERE batch_id = ?";
@@ -42,18 +42,6 @@ public class FeedingLogDAO {
                 }
                 return logs;
             }
-        }
-    }
-
-    public List<DailyFeedLog> getAllLogsByBatch(int batchId)throws SQLException{
-        String sql = "SELECT * FROM daily_logs WHERE batch_id = ?";
-        List<DailyFeedLog> logs = new ArrayList<>();
-        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql); ResultSet rs = stm.executeQuery()){
-            while(rs.next()){
-                DailyFeedLog log = mapRowDailyFeedLog(rs);
-                logs.add(log);
-            }
-            return logs;
         }
     }
 

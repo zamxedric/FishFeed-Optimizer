@@ -47,39 +47,21 @@ public class Dashboard extends JPanel {
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
 
-        String svg = "src\\display_components\\Sidebar.svg";
-        panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
-        
-        String logoIcon = ("src\\display_components\\AppLogo.svg");
-        logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
+        panel[0] = DisplayHelper.parsingSvg("/resources/images/Sidebar.svg", 0, 0, 375, 720);
+        logo = DisplayHelper.parsingSvg("/resources/images/AppLogo.svg", 20, 44, 284, 76);
 
-        ImageIcon panelIcon = new ImageIcon("src\\display_components\\UpperPanel.png");
-        panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 34, 817, 392);
+        panel[1] = DisplayHelper.parsingImg("/resources/images/UpperPanel.png", 420, 34, 817, 392);
 
-        ImageIcon statIcon5 = new ImageIcon("src\\display_components\\RecentLog.png");
-        panel[2] = DisplayHelper.parsingImg(statIcon5,420, 440, 817, 251); 
+        panel[2] = DisplayHelper.parsingImg("/resources/images/RecentLog.png",420, 440, 817, 251); 
 
-        String svg3 = "src\\display_components\\Dashboard_Clicked.svg";
-        panel[3] = DisplayHelper.parsingSvg(svg3, 32, 187, 301, 47);
+        panel[3] = DisplayHelper.parsingSvg("/resources/images/Dashboard_Clicked.svg", 32, 187, 301, 47);
 
-        String svg4 = "src\\display_components\\Daily_Logs_Not_Clicked.svg";
-        button[0] = DisplayHelper.buttonSvg(svg4, 43, 287, 301, 47);
-        button[0].addActionListener(e -> parent.switchPage("DailyLogs"));
+        button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
+        button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Analytics_NotClicked.svg", 387, "Analytics");
+        button[2] = DisplayHelper.setupSidebar(parent, "/resources/images/Add_NotClicked.svg", 487, "AddBatch");
+        button[3] = DisplayHelper.setupSidebar(parent, "/resources/images/Bi_NotClicked.svg", 587, "BiWeeklySample");
 
-        String svg5 = "src\\display_components\\Analytics_NotClicked.svg";
-        button[1] = DisplayHelper.buttonSvg(svg5, 43, 387, 301, 47);
-        button[1].addActionListener(e -> parent.switchPage("Analytics"));
-
-        String svg6 = "src\\display_components\\Add_NotClicked.svg";
-        button[2] = DisplayHelper.buttonSvg(svg6, 43, 487, 301, 47);
-        button[2].addActionListener(e -> parent.switchPage("AddBatch"));
-
-        String svg7 = "src\\display_components\\Bi_NotClicked.svg";
-        button[3] = DisplayHelper.buttonSvg(svg7, 43, 587, 301, 47);
-        button[3].addActionListener(e -> parent.switchPage("BiWeeklySample"));
-
-        String svg8 = "src\\display_components\\Calculate.svg";
-        button[4] = DisplayHelper.buttonSvg(svg8, 430, 635, 250, 42);
+        button[4] = DisplayHelper.buttonSvg("/resources/images/Calculate.svg", 430, 635, 250, 42);
         button[4].addActionListener(e -> {
             if(selectedBatch == null){
                 JOptionPane.showMessageDialog(this, "Please select an active batch!");
@@ -109,8 +91,8 @@ public class Dashboard extends JPanel {
             
         });
             
-        String svg9 = "src\\display_components\\ClearLog.svg";
-        button[5] = DisplayHelper.buttonSvg(svg9, 980, 635, 250, 42);
+        // String svg9 = ;
+        button[5] = DisplayHelper.buttonSvg("/resources/images/ClearLog.svg", 980, 635, 250, 42);
         button[5].addActionListener(e -> {
             label[2].setText("Estimated Biomass:");
             label[3].setText("Target Rate:");
@@ -155,7 +137,6 @@ public class Dashboard extends JPanel {
         label[4] = DisplayHelper.fieldLabel(this, "Water Temp:", 20, 830, 510, 203, 28);
         label[5] = DisplayHelper.fieldLabel(this, "Weather:", 20, 830, 570, 203, 28);
         label[6] = DisplayHelper.fieldLabel(this, "Recommended Ration: ", 24, 440, 600, 371, 28);
-
 
         for(JRadioButton temp: tempButton){
             this.add(temp);
@@ -242,24 +223,20 @@ public class Dashboard extends JPanel {
         
         progressBar.setBounds(300, 18, 150, 24);
 
-        String svg10 = "src\\display_components\\EditButt.svg";
-        JButton buttonHarvest = DisplayHelper.buttonSvg(svg10, 550, 13, 50, 40);
+        JButton buttonHarvest = DisplayHelper.buttonSvg("/resources/images/EditButt.svg", 550, 13, 50, 40);
         buttonHarvest.addActionListener(e -> {
             if (onHarvestCallback != null) {
                 onHarvestCallback.accept(batch);
             }
         });
 
-        String svg11 = "src\\display_components\\DelButt.svg";
-        JButton buttonDelete = DisplayHelper.buttonSvg(svg11, 630, 13, 50, 40);
+        JButton buttonDelete = DisplayHelper.buttonSvg("/resources/images/DelButt.svg", 630, 13, 50, 40);
         buttonDelete.addActionListener(e -> {
             if (onDeleteCallback != null) {
                 onDeleteCallback.accept(batch);
             }
         });
-
-        ImageIcon statIcon = new ImageIcon("src\\display_components\\ActivePanel.png");
-        JLabel bgImage = DisplayHelper.parsingImg(statIcon, 0, 0, 756, 62);
+        JLabel bgImage = DisplayHelper.parsingImg("/resources/images/ActivePanel.png", 0, 0, 756, 62);
 
         rowPanel.add(pondName);
         rowPanel.add(species);

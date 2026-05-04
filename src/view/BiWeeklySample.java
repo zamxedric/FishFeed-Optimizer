@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -38,49 +37,31 @@ public class BiWeeklySample extends JPanel{
     private JScrollPane scrollPane;
     private JComboBox<ComboItem> cbBatchName;
     private AppController controller;
+    private MainFrame parent;
 
     public BiWeeklySample (MainFrame parent){
+        this.parent = parent;
+
         setLayout(null);
         setOpaque(false); 
         setPreferredSize(new Dimension(1280, 720));
 
-        String svg = "src\\display_components\\Sidebar.svg";
-        panel[0] = DisplayHelper.parsingSvg(svg, 0, 0, 375, 720);
+        panel[0] = DisplayHelper.parsingSvg("/resources/images/Sidebar.svg", 0, 0, 375, 720);
+        logo = DisplayHelper.parsingSvg("/resources/images/AppLogo.svg", 20, 44, 284, 76);
 
-        String logoIcon = ("src\\display_components\\AppLogo.svg");
-        logo = DisplayHelper.parsingSvg(logoIcon, 20, 44, 284, 76);
+        panel[1] = DisplayHelper.parsingImg("/resources/images/AddLogPane.png", 420, 84, 817, 531);
+        panel[2] = DisplayHelper.parsingImg("/resources/images/InputPanelX.png", 490, 254, 673, 266);
+        panel[3] = DisplayHelper.parsingSvg("/resources/images/Bi_Clicked.svg", 32, 587, 301, 47);
 
-        ImageIcon panelIcon = new ImageIcon("src\\display_components\\AddLogPane.png");
-        panel[1] = DisplayHelper.parsingImg(panelIcon, 420, 84, 817, 531);
-
-        ImageIcon panelIcon2 = new ImageIcon("src\\display_components\\InputPanelX.png");
-        panel[2] = DisplayHelper.parsingImg(panelIcon2, 490, 254, 673, 266);
-
-        String svg2 = "src\\display_components\\Bi_Clicked.svg";
-        panel[3] = DisplayHelper.parsingSvg(svg2, 32, 587, 301, 47);
-
-        ImageIcon panelIcon3 = new ImageIcon("src\\display_components\\Prev_Samp.png");
-        panel[4] = DisplayHelper.parsingImg(panelIcon3, 420, 84, 817, 49);
+        panel[4] = DisplayHelper.parsingImg("/resources/images/Prev_Samp.png", 420, 84, 817, 49);
         panel[4].setVisible(false);
 
-        String svg3 = "src\\display_components\\DashboardNotClicked.svg";
-        button[0] = DisplayHelper.buttonSvg(svg3, 43, 187, 301, 47);
-        button[0].addActionListener(e -> parent.switchPage("Dashboard"));
+        button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/DashboardNotClicked.svg", 187, "Dashboard");
+        button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
+        button[2] = DisplayHelper.setupSidebar(parent, "/resources/images/Analytics_NotClicked.svg", 387, "Analytics");
+        button[3] = DisplayHelper.setupSidebar(parent, "/resources/images/Add_NotClicked.svg", 487, "AddBatch");
 
-        String svg4 = "src\\display_components\\Daily_Logs_Not_Clicked.svg";
-        button[1] = DisplayHelper.buttonSvg(svg4, 43, 287, 301, 47);
-        button[1].addActionListener(e -> parent.switchPage("DailyLogs"));
-
-        String svg5 = "src\\display_components\\Analytics_NotClicked.svg";
-        button[2] = DisplayHelper.buttonSvg(svg5, 43, 387, 301, 47);
-        button[2].addActionListener(e -> parent.switchPage("Analytics"));
-
-        String svg6 = "src\\display_components\\Add_NotClicked.svg";
-        button[3] = DisplayHelper.buttonSvg(svg6, 43, 487, 301, 47);
-        button[3].addActionListener(e -> parent.switchPage("AddBatch"));
-
-        String svg7 = "src\\display_components\\SaveLog.svg";
-        button[4] = DisplayHelper.buttonSvg(svg7, 430, 555, 250, 42);
+        button[4] = DisplayHelper.buttonSvg("/resources/images/SaveLog.svg", 430, 555, 250, 42);
         button[4].addActionListener(e -> {
             button[4].setEnabled(false);
             Timer timer = new Timer(3000, event -> {
@@ -90,81 +71,14 @@ public class BiWeeklySample extends JPanel{
             timer.start();
         });
 
-        String svg8 = "src\\display_components\\ClearLog.svg";
-        button[5] = DisplayHelper.buttonSvg(svg8, 980, 555, 250, 42);
+        button[5] = DisplayHelper.buttonSvg("/resources/images/ClearLog.svg", 980, 555, 250, 42);
         button[5].addActionListener(e -> clearField());
 
-        button[6] = DisplayHelper.buttonSvg("src\\display_components\\Add_Sampling.svg", 420, 44, 204, 49);
-        button[6].addActionListener(e -> {
-            parent.switchPage("BiWeeklySample");
-            panel[4].setVisible(false);
-            panel[2].setVisible(true);
-            cbBatchName.setVisible(true);
-            scrollPane.setVisible(false);
-            for(JLabel t:txtLabel){
-                t.setVisible(true);
-            }
-            for(JTextField t:txt){
-                t.setEditable(true);
-                t.setVisible(true);
-            }
-            label[0].setText("Bi-Weekly Sampling Entry");
-            
-            label[1].setText("Batch Name:");
-            label[1].setBounds(480, 175, 322, 28); 
-            
-            label[2].setText("Species:");
-            label[2].setBounds(875, 175, 322, 28);
-            
-            label[3].setText("Bangus");
-            label[3].setBounds(985, 175, 322, 28);
-            label[3].setForeground(new Color(0x000404));
-            for (int i = 4; i <= 6; i++) {
-                label[i].setVisible(true);
-            }
-            for (int i = 4; i <= 5; i++) {
-                button[i].setVisible(true);
-            }
-            txtDate.setVisible(true);
-            repaint();
-            revalidate();
-        });
+        button[6] = DisplayHelper.buttonSvg("/resources/images/Add_Sampling.svg", 420, 44, 204, 49);
+        button[6].addActionListener(e -> toggleViewMode(false));
 
-        button[7] = DisplayHelper.buttonSvg("src\\display_components\\History_Butt.svg", 600, 44, 204, 49);
-        button[7].addActionListener(e -> {
-            panel[4].setVisible(true);
-            panel[2].setVisible(false);
-            cbBatchName.setVisible(false);
-            scrollPane.setVisible(true);
-            for(JLabel t:txtLabel){
-                t.setVisible(false);;
-            }
-            for(JTextField t:txt){
-                t.setEditable(false);
-                t.setVisible(false);
-            }
-            label[0].setText("Previous Samplings");
-            
-            label[1].setText("Sample Date");
-            label[1].setBounds(480, 175, 322, 28); 
-            
-            label[2].setText("Batch Name");
-            label[2].setBounds(680, 175, 322, 28); 
-            
-            label[3].setText("Avg. Weight(g)");
-            label[3].setBounds(880, 175, 322, 28);
-            label[3].setForeground(new Color(0xFFFFFF));
-            for (int i = 4; i <= 6; i++) {
-                label[i].setVisible(false);
-            }
-            for (int i = 4; i <= 5; i++) {
-                button[i].setVisible(false);
-            }
-            txtDate.setVisible(false);
-            loadSamplingHistory();
-            repaint();
-            revalidate();
-        });
+        button[7] = DisplayHelper.buttonSvg("/resources/images/History_Butt.svg", 600, 44, 204, 49);
+        button[7].addActionListener(e -> toggleViewMode(true));
 
         label[0] = DisplayHelper.fieldLabel(this,"Bi-Weekly Sampling Entry", 24, 695, 94, 322, 28);
         label[1] = DisplayHelper.fieldLabel(this,"Batch Name:", 20, 480, 175, 322, 28);
@@ -190,16 +104,11 @@ public class BiWeeklySample extends JPanel{
         this.setComponentZOrder(cbBatchName, 0);
 
         //TextField Appearance
-        String textSvg = "src\\display_components\\AddBatchTxt2.svg";
-        txtLabel[0] = DisplayHelper.parsingSvg(textSvg, 610, 175, 177, 37);
-        String textSvg2 = "src\\display_components\\AddBatchTxt2.svg";
-        txtLabel[1] = DisplayHelper.parsingSvg(textSvg2, 980, 175, 177, 37);
-        String textSvg3 = "src\\display_components\\AddBatchTxtX.svg";
-        txtLabel[2] = DisplayHelper.parsingSvg(textSvg3, 535, 310, 568, 37);
-        String textSvg4 = "src\\display_components\\AddBatchTxtX.svg";
-        txtLabel[3] = DisplayHelper.parsingSvg(textSvg4, 535, 380, 568, 37);
-        String textSvg5 = "src\\display_components\\AddBatchTxtX.svg";
-        txtLabel[4] = DisplayHelper.parsingSvg(textSvg5, 535, 450, 568, 37);
+        txtLabel[0] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt2.svg", 610, 175, 177, 37);
+        txtLabel[1] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxt2.svg", 980, 175, 177, 37);
+        txtLabel[2] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxtX.svg", 535, 310, 568, 37);
+        txtLabel[3] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxtX.svg", 535, 380, 568, 37);
+        txtLabel[4] = DisplayHelper.parsingSvg("/resources/images/AddBatchTxtX.svg", 535, 450, 568, 37);
 
         //Text appearance
         txt[0] = DisplayHelper.textField(540, 380, 563, 37);
@@ -237,6 +146,51 @@ public class BiWeeklySample extends JPanel{
             this.add(panel[i]);
         }
     }
+
+    private void toggleViewMode(boolean isHistory){
+        if(!isHistory){
+            parent.switchPage("BiWeeklySample");
+        }
+
+        panel[4].setVisible(isHistory);
+        panel[2].setVisible(!isHistory);
+        cbBatchName.setVisible(!isHistory);
+        scrollPane.setVisible(isHistory);
+        txtDate.setVisible(!isHistory);
+
+        for (JLabel t : txtLabel) t.setVisible(!isHistory);
+        for (JTextField t : txt) {
+            t.setEditable(!isHistory);
+            t.setVisible(!isHistory);
+        }
+        for (int i = 4; i <= 6; i++) label[i].setVisible(!isHistory);
+        for (int i = 4; i <= 5; i++) button[i].setVisible(!isHistory);
+
+        if (isHistory) {
+            label[0].setText("Previous Samplings");
+            label[1].setText("Sample Date");
+            label[1].setBounds(480, 175, 322, 28); 
+            label[2].setText("Batch Name");
+            label[2].setBounds(680, 175, 322, 28); 
+            label[3].setText("Avg. Weight(g)");
+            label[3].setBounds(880, 175, 322, 28);
+            label[3].setForeground(new Color(0xFFFFFF));
+            loadSamplingHistory();
+        } else {
+            label[0].setText("Bi-Weekly Sampling Entry");
+            label[1].setText("Batch Name:");
+            label[1].setBounds(480, 175, 322, 28); 
+            label[2].setText("Species:");
+            label[2].setBounds(875, 175, 322, 28);
+            label[3].setText("Bangus");
+            label[3].setBounds(985, 175, 322, 28);
+            label[3].setForeground(new Color(0x000404));
+        }
+
+        repaint();
+        revalidate();        
+    }
+
     public void clearField(){
         for(JTextField t:txt){
             t.setText("");

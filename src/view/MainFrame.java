@@ -4,7 +4,6 @@ import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,13 +29,12 @@ public class MainFrame extends JFrame{
         setResizable(false);
         setUndecorated(true);
 
-        ImageIcon background = new ImageIcon("src\\display_components\\Background.png");
-        bgLabel = DisplayHelper.parsingImg(background, 0, 0, 1280, 720);
+        bgLabel = DisplayHelper.parsingImg("/resources/images/Background.png", 0, 0, 1280, 720);
         this.setContentPane(bgLabel);
 
         setLayout(null);
 
-        exitButton = DisplayHelper.buttonSvg("src\\display_components\\CloseButton.svg", 1245, 5, 27, 27);
+        exitButton = DisplayHelper.buttonSvg("/resources/images/CloseButton.svg", 1245, 5, 27, 27);
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);

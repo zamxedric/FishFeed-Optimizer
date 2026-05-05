@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +18,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
+import java.awt.Cursor;
+
 import controller.AppController;
 import model.FishBatch;
 import model.SamplingRecord;
@@ -29,9 +30,9 @@ import util.ValidateInput;
 public class BiWeeklySample extends JPanel{
     private JLabel label[] = new JLabel[7];
     private JLabel txtLabel[] = new JLabel[5];
-    private JLabel panel[] = new JLabel[5];
-    private JTextField txt[] = new JTextField[2];
-    private JButton button[] = new JButton[8];
+    private JLabel panel[] = new JLabel[6];
+    private JTextField txt[] = new JTextField[3];
+    private JButton button[] = new JButton[9];
     private JLabel txtDate, logo;
     private JPanel batchesContainer;
     private JScrollPane scrollPane;
@@ -54,7 +55,8 @@ public class BiWeeklySample extends JPanel{
         panel[3] = DisplayHelper.parsingSvg("/resources/images/Bi_Clicked.svg", 32, 587, 301, 47);
 
         panel[4] = DisplayHelper.parsingImg("/resources/images/Prev_Samp.png", 420, 84, 817, 49);
-        panel[4].setVisible(false);
+        panel[5] = DisplayHelper.parsingSvg("/resources/images/Search_Bar.svg", 955, 90, 225, 37);
+        for(int i = 4; i <= 5; i++) panel[i].setVisible(false);
 
         button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/DashboardNotClicked.svg", 187, "Dashboard");
         button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
@@ -79,6 +81,17 @@ public class BiWeeklySample extends JPanel{
 
         button[7] = DisplayHelper.buttonSvg("/resources/images/History_Butt.svg", 600, 44, 204, 49);
         button[7].addActionListener(e -> toggleViewMode(true));
+
+        button[8] = new JButton();
+        button[8].setBounds(955, 90, 37, 37);
+        button[8].setOpaque(false);
+        button[8].setContentAreaFilled(false);
+        button[8].setBorderPainted(false);
+        button[8].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button[8].addActionListener(e -> {
+            String searchBatch = txt[2].getText();
+            searchRecord(searchBatch);
+        });
 
         label[0] = DisplayHelper.fieldLabel(this,"Bi-Weekly Sampling Entry", 24, 695, 94, 322, 28);
         label[1] = DisplayHelper.fieldLabel(this,"Batch Name:", 20, 480, 175, 322, 28);
@@ -115,19 +128,15 @@ public class BiWeeklySample extends JPanel{
         txt[0].setForeground(new Color(0x000404));
         txt[1] = DisplayHelper.textField(540, 450, 563, 37);
         txt[1].setForeground(new Color(0x000404));
+        txt[2] = DisplayHelper.textField(995, 90, 185, 37);
+        txt[2].setForeground(new Color(0x000404));
+        txt[2].setEditable(false);
 
         batchesContainer = new JPanel();
         batchesContainer.setLayout(new BoxLayout(batchesContainer,BoxLayout.Y_AXIS));
         batchesContainer.setOpaque(false);
         
-        scrollPane = new JScrollPane(batchesContainer);
-        scrollPane.setBounds(440,204, 770, 420);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
+        scrollPane = DisplayHelper.scrollPane(batchesContainer, 440, 204, 770, 420);
 
         for(JTextField t:txt){
             this.add(t);
@@ -152,22 +161,26 @@ public class BiWeeklySample extends JPanel{
             parent.switchPage("BiWeeklySample");
         }
 
-        panel[4].setVisible(isHistory);
+        for(int i = 4; i <= 5; i++) panel[i].setVisible(isHistory);
         panel[2].setVisible(!isHistory);
         cbBatchName.setVisible(!isHistory);
         scrollPane.setVisible(isHistory);
         txtDate.setVisible(!isHistory);
+        txt[2].setVisible(isHistory);
+        txt[2].setEditable(isHistory);
+        button[8].setVisible(isHistory);
 
         for (JLabel t : txtLabel) t.setVisible(!isHistory);
-        for (JTextField t : txt) {
-            t.setEditable(!isHistory);
-            t.setVisible(!isHistory);
+        for (int i = 0; i < 2; i++) {
+            txt[i].setEditable(!isHistory);
+            txt[i].setVisible(!isHistory);
         }
         for (int i = 4; i <= 6; i++) label[i].setVisible(!isHistory);
         for (int i = 4; i <= 5; i++) button[i].setVisible(!isHistory);
 
         if (isHistory) {
             label[0].setText("Previous Samplings");
+            label[0].setBounds(695, 94, 249, 28);
             label[1].setText("Sample Date");
             label[1].setBounds(480, 175, 322, 28); 
             label[2].setText("Batch Name");
@@ -178,6 +191,7 @@ public class BiWeeklySample extends JPanel{
             loadSamplingHistory();
         } else {
             label[0].setText("Bi-Weekly Sampling Entry");
+            label[0].setBounds(695, 94, 322, 28);
             label[1].setText("Batch Name:");
             label[1].setBounds(480, 175, 322, 28); 
             label[2].setText("Species:");
@@ -259,6 +273,27 @@ public class BiWeeklySample extends JPanel{
         }
     }
 
+    public void searchRecord(String searchBatch){
+        try {
+            List<SamplingRecord> records = controller.getRecordDAO().searchRecords(searchBatch);
+            batchesContainer.removeAll();
+
+            if (records == null || records.isEmpty()) {
+                JLabel emptyLabel = DisplayHelper.fieldLabel(batchesContainer, "No records found", 20,535, 350, 322, 28);
+                batchesContainer.add(emptyLabel);
+            } else {
+                for(SamplingRecord record:records){
+                    JPanel row = createSamplingRow(record);
+                    batchesContainer.add(row);
+                    batchesContainer.add(Box.createRigidArea(new Dimension(0,5)));
+                }  
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setController(AppController controller){
         this.controller = controller;
     }
@@ -276,7 +311,6 @@ public class BiWeeklySample extends JPanel{
         }
 
         String inputString[] = {txt[0].getText(),txt[1].getText()};
-    
         boolean isValid = ValidateInput.validateInput(inputString);
 
         if(!isValid){

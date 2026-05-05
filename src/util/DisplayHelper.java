@@ -8,9 +8,11 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
 
 import view.MainFrame;
+
 import com.kitfox.svg.app.beans.SVGIcon;
 
 public class DisplayHelper {
@@ -18,6 +20,7 @@ public class DisplayHelper {
     public static JButton setupSidebar(MainFrame parent, String path, int yAxis, String pageTarget){
         JButton btn = buttonSvg(path, 43, yAxis, 301, 47);
         btn.addActionListener(e -> parent.switchPage(pageTarget));
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return btn;
     }
 
@@ -99,6 +102,7 @@ public class DisplayHelper {
         button.setFocusable(false);
         button.setContentAreaFilled(false);
         button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setOpaque(false);
         button.setBounds(x, y, width, height);
         button.setBorder(null);
@@ -152,6 +156,18 @@ public class DisplayHelper {
 
         radioButton.setBounds(x, y, width, height);
         return radioButton;
+    }
+
+    public static JScrollPane scrollPane(JPanel panel, int x, int y, int width, int height){
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setBounds(x, y, width, height);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
+        return scrollPane;
     }
 
     public static <T> JComboBox<T> jComboBox(int x, int y, int width, int height){

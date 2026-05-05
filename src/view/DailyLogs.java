@@ -100,14 +100,7 @@ public class DailyLogs extends JPanel{
         batchesContainer.setLayout(new BoxLayout(batchesContainer,BoxLayout.Y_AXIS));
         batchesContainer.setOpaque(false);
         
-        scrollPane = new JScrollPane(batchesContainer);
-        scrollPane.setBounds(440,540, 770, 140);
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(8);
+        scrollPane = DisplayHelper.scrollPane(batchesContainer, 440, 540, 770, 140);
 
         loadRecentLogs();
         this.add(scrollPane);

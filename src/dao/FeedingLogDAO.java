@@ -45,6 +45,22 @@ public class FeedingLogDAO {
         }
     }
 
+    public List<DailyFeedLog> searchLogs(String pondName) throws SQLException{
+        String sql = "SELECT * FROM daily_logs WHERE batch_name LIKE ?";
+        List<DailyFeedLog> logs = new ArrayList<>();
+        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
+            stm.setString(1,"%" + pondName + "%");
+
+            try(ResultSet rs = stm.executeQuery()){
+                while(rs.next()){
+                    DailyFeedLog log = mapRowDailyFeedLog(rs);
+                    logs.add(log);
+                }
+                return logs;
+            }
+        }
+    }
+
     public List<DailyFeedLog> getRecentLogs()throws SQLException{
         String sql = "SELECT * FROM daily_logs ORDER BY log_date DESC LIMIT 10";
         List<DailyFeedLog> logs = new ArrayList<>();
@@ -163,12 +179,12 @@ public class FeedingLogDAO {
 
     //Update
     public boolean updateLog(DailyFeedLog log)throws SQLException{
-        String sql = "UPDATE daily_logs SET batch_name = ?, log_date = ?, feed_kg = ?, water_temp = ? WHERE log_id = ?";
+        String sql = "UPDATE daily_logs SET feed_kg = ?, feed_cost_kg = ?, water_temp = ?, mortality = ? WHERE log_id = ?";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
-            stm.setString(1, log.getBatchName());
-            stm.setObject(2, log.getLogDate());
-            stm.setDouble(3, log.getFeedGivenKg());
-            stm.setDouble(4, log.getWaterTemp());
+            stm.setDouble(1, log.getFeedGivenKg());
+            stm.setDouble(2, log.getFeedCostPerKg());
+            stm.setDouble(3, log.getWaterTemp());
+            stm.setInt(4, log.getMortality());
             stm.setInt(5, log.getId());
 
             int rowsAffected = stm.executeUpdate();

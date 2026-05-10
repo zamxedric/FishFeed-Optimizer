@@ -90,8 +90,7 @@ public class Dashboard extends JPanel {
             }
             
         });
-            
-        // String svg9 = ;
+     
         button[5] = DisplayHelper.buttonSvg("/resources/images/ClearLog.svg", 980, 635, 250, 42);
         button[5].addActionListener(e -> {
             label[2].setText("Estimated Biomass:");

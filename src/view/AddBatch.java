@@ -130,7 +130,7 @@ public class AddBatch extends JPanel{
         }
 
             try{
-                String batchName = inputString[0];
+                String batchName = inputString[0].replaceAll("\\s+", "");
                 int stockCount = Integer.parseInt(inputString[1]);
                 double totalWeight = Double.parseDouble(inputString[2]);
                 double targetWeight = Double.parseDouble(inputString[3]);

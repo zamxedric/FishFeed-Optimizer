@@ -7,7 +7,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import dao.FeedingLogDAO;
 import dao.FishBatchDAO;
@@ -44,12 +47,15 @@ public class AppController {
 
         this.view.getAnalyticsPanel().setController(this);
         this.view.getBiWeeklySamplePanel().setController(this);
+        this.view.getDailyLogsPanel().setController(this);
 
         this.view.getDailyLogsPanel().getSaveButton().addActionListener(e -> saveDailyLog());
         this.view.getAddBatchPanel().getSaveButton().addActionListener(e -> saveAddBatch());
         this.view.getBiWeeklySamplePanel().getSaveButton().addActionListener(e -> saveRecord());
         this.view.getDashboardPanel().setOnHarvest(this::harvestBatch);
         this.view.getDashboardPanel().setOnDelete(this::deleteBatch);
+        this.view.getDailyLogsPanel().setOnEdit(this::showEditDialogForLog);
+        this.view.getBiWeeklySamplePanel().setOnEdit(this::showEditDialogForSample);
     }
 
     public FishBatchDAO getBatchDAO() {
@@ -125,6 +131,19 @@ public class AppController {
         }
     }
 
+    private void saveRecord(){
+        SamplingRecord record = view.getBiWeeklySamplePanel().getSamplingRecordData();
+
+        if(recordDAO != null){
+            try {
+                recordDAO.addSample(record);
+                view.getBiWeeklySamplePanel().clearField();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(view, "Failed to save daily log" + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     private void harvestBatch(FishBatch batch){
         int confirm = JOptionPane.showConfirmDialog(view, "Are you sure you want to mark " + batch.getPondName() + " as Harvested?",
         "Confirm Harvest", JOptionPane.YES_NO_OPTION);
@@ -159,16 +178,73 @@ public class AppController {
         }
     }
 
-    private void saveRecord(){
-        SamplingRecord record = view.getBiWeeklySamplePanel().getSamplingRecordData();
+    private void showEditDialogForLog(DailyFeedLog log){
+        JPanel editPanel = new JPanel(new java.awt.GridLayout(0,2,10,10));
 
-        if(recordDAO != null){
+        JTextField feedField = new JTextField(String.valueOf(log.getFeedGivenKg()));
+        JTextField costField = new JTextField(String.valueOf(log.getFeedCostPerKg()));
+        JTextField tempField = new JTextField(String.valueOf(log.getWaterTemp()));
+        JTextField mortalityField = new JTextField(String.valueOf(log.getMortality())); 
+
+        editPanel.add(new JLabel("Amount given (kg): "));
+        editPanel.add(feedField);
+        editPanel.add(new JLabel("Feed cost per kg: "));
+        editPanel.add(costField);
+        editPanel.add(new JLabel("Water temp: "));
+        editPanel.add(tempField);
+        editPanel.add(new JLabel("Mortality: "));
+        editPanel.add(mortalityField);
+
+        int result = JOptionPane.showConfirmDialog(view, editPanel, "Edit Log: " + log.getBatchName() + " (" + log.getLogDate() + ")", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if(result == JOptionPane.OK_OPTION){
             try {
-                recordDAO.addSample(record);
-                view.getBiWeeklySamplePanel().clearField();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(view, "Failed to save daily log" + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                double newFeed = Double.parseDouble(feedField.getText());
+                double newCost = Double.parseDouble(costField.getText());
+                double newTemp = Double.parseDouble(tempField.getText());
+                int newMortality = Integer.parseInt(mortalityField.getText());
+
+                log.setFeedGivenKg(newFeed);
+                log.setFeedCostPerKg(newCost);
+                log.setWaterTemp(newTemp);
+                log.setMortality(newMortality);
+
+                try {
+                    logDAO.updateLog(log); 
+                    view.getDailyLogsPanel().loadRecentLogs(); 
+                    
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(view, "Failed to update log: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(view, "Please enter a valid number", "Invalid input", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    } 
+
+    private void showEditDialogForSample(SamplingRecord record){
+        JPanel editPanel = new JPanel(new java.awt.GridLayout(0,2,10,10));
+
+        JTextField avgWeightField = new JTextField(String.valueOf(record.getAvgWeightSample()));
+
+        editPanel.add(new JLabel("Avg Weight per Sample: "));
+        editPanel.add(avgWeightField);
+
+        try {
+            FishBatch batch = batchDAO.getBatchById(record.getBatchId());
+            int result = JOptionPane.showConfirmDialog(view, editPanel, "Edit Record: " + batch.getPondName() + " (" + record.getSampleDate() + ")", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            
+            if(result == JOptionPane.OK_OPTION){
+                double newAvgWeight = Double.parseDouble(avgWeightField.getText());
+                record.setAverageBodyWeight(newAvgWeight);
+
+                recordDAO.updateRecord(record);
+                view.getBiWeeklySamplePanel().loadSamplingHistory();
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(view, "Failed to harvest batch: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 

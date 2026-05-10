@@ -68,9 +68,9 @@ public class SamplingRecordDAO {
     }
 
     public List<SamplingRecord> searchRecords(String search) throws SQLException{
-        String sql = "SELECT batches.batch_name, sampling_records.* " +
+        String sql = "SELECT batches.pond_name, sampling_records.* " +
                      "FROM sampling_records " + "JOIN batches ON sampling_records.batch_id = batches.batch_id " +
-                     "WHERE batches.batch_name LIKE ?";
+                     "WHERE batches.pond_name LIKE ?";
             List<SamplingRecord> records = new ArrayList<>();
             try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
                 stm.setString(1, "%" + search + "%");
@@ -83,6 +83,16 @@ public class SamplingRecordDAO {
                     return records;
                 }
             }
+    }
+
+    public boolean updateRecord(SamplingRecord record)throws SQLException{
+        String sql = "UPDATE sampling_records SET avg_weight_sample";
+        try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
+            stm.setDouble(1, record.getAvgWeightSample());
+
+            int rowsAffected = stm.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
 
     private SamplingRecord mapRowSamplingRecord(ResultSet rs)throws SQLException{

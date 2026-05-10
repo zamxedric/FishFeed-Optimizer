@@ -1,11 +1,13 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -39,6 +41,11 @@ public class BiWeeklySample extends JPanel{
     private JComboBox<ComboItem> cbBatchName;
     private AppController controller;
     private MainFrame parent;
+    private Consumer<SamplingRecord> onEditCallback;
+
+    public void setOnEdit(Consumer<SamplingRecord> callback){
+        this.onEditCallback = callback;
+    }
 
     public BiWeeklySample (MainFrame parent){
         this.parent = parent;
@@ -89,8 +96,13 @@ public class BiWeeklySample extends JPanel{
         button[8].setBorderPainted(false);
         button[8].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button[8].addActionListener(e -> {
-            String searchBatch = txt[2].getText();
-            searchRecord(searchBatch);
+            String searchBatch = txt[2].getText().replaceAll("\\s+", "");
+            if (searchBatch.isEmpty()) {
+                loadSamplingHistory();
+                return; 
+            }
+            String finalSearch = searchBatch.substring(0, 1).toUpperCase() + searchBatch.substring(1);
+            searchRecord(finalSearch);
         });
 
         label[0] = DisplayHelper.fieldLabel(this,"Bi-Weekly Sampling Entry", 24, 695, 94, 322, 28);
@@ -168,6 +180,7 @@ public class BiWeeklySample extends JPanel{
         txtDate.setVisible(!isHistory);
         txt[2].setVisible(isHistory);
         txt[2].setEditable(isHistory);
+        txt[2].addActionListener(e -> button[8].doClick());
         button[8].setVisible(isHistory);
 
         for (JLabel t : txtLabel) t.setVisible(!isHistory);
@@ -218,15 +231,15 @@ public class BiWeeklySample extends JPanel{
     private JPanel createSamplingRow(SamplingRecord sample){
         JPanel rowPanel = new JPanel();
         rowPanel.setLayout(null);
-        rowPanel.setPreferredSize(new Dimension(750, 35));
-        rowPanel.setMaximumSize(new Dimension(750, 35));
-        rowPanel.setMinimumSize(new Dimension(750, 35)); 
+        rowPanel.setPreferredSize(new Dimension(756, 62));
+        rowPanel.setMaximumSize(new Dimension(756, 62));
+        rowPanel.setMinimumSize(new Dimension(756, 62)); 
         rowPanel.setOpaque(false);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String dateStr = sample.getSampleDate().format(formatter);
 
-        JLabel lblDate = DisplayHelper.tableLabel(dateStr, 18, 38, 5, 120, 28);
+        JLabel lblDate = DisplayHelper.tableLabel(dateStr, 18, 38, 9, 120, 28);
         lblDate.setForeground(new Color(0xFFFFFF));
         String batchName = "Unknown";
         try {
@@ -240,14 +253,22 @@ public class BiWeeklySample extends JPanel{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        JLabel lblBatch = DisplayHelper.tableLabel(batchName, 18, 250, 5, 200, 28);
+        JLabel lblBatch = DisplayHelper.tableLabel(batchName, 18, 250, 9, 200, 28);
         lblBatch.setForeground(new Color(0xFFFFFF));
-        JLabel lblWeight = DisplayHelper.tableLabel(String.format("%.1fg", sample.getAvgWeightSample()), 18, 470, 5, 100, 28);
+        JLabel lblWeight = DisplayHelper.tableLabel(String.format("%.1fg", sample.getAvgWeightSample()), 18, 470, 9, 100, 28);
         lblWeight.setForeground(new Color(0xFFFFFF));
+
+        JButton editButton = DisplayHelper.buttonSvg("/resources/images/EditButt.svg", 550, 5, 50, 40);
+        editButton.addActionListener(e -> {
+            if (onEditCallback != null) {
+                onEditCallback.accept(sample);
+            }
+        });
 
         rowPanel.add(lblDate);
         rowPanel.add(lblBatch);
         rowPanel.add(lblWeight);
+        rowPanel.add(editButton);
 
         return rowPanel;
     }
@@ -279,7 +300,10 @@ public class BiWeeklySample extends JPanel{
             batchesContainer.removeAll();
 
             if (records == null || records.isEmpty()) {
-                JLabel emptyLabel = DisplayHelper.fieldLabel(batchesContainer, "No records found", 20,535, 350, 322, 28);
+                JLabel emptyLabel = DisplayHelper.fieldLabel(batchesContainer, "No records found", 20,695, 550, 322, 28);
+                emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+                batchesContainer.add(Box.createRigidArea(new Dimension(0, 100)));
                 batchesContainer.add(emptyLabel);
             } else {
                 for(SamplingRecord record:records){
@@ -288,7 +312,8 @@ public class BiWeeklySample extends JPanel{
                     batchesContainer.add(Box.createRigidArea(new Dimension(0,5)));
                 }  
             }
-            
+            batchesContainer.revalidate();
+            batchesContainer.repaint();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -330,5 +355,4 @@ public class BiWeeklySample extends JPanel{
             return null;
         }
     }
-
 }

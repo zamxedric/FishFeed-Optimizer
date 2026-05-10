@@ -1,17 +1,22 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.swing.*;
 
-import dao.FeedingLogDAO;
+import controller.AppController;
+
+import java.awt.Cursor;
 
 import model.DailyFeedLog;
+
 import util.ComboItem;
 import util.DisplayHelper;
 import util.ValidateInput;
@@ -19,14 +24,19 @@ import util.ValidateInput;
 public class DailyLogs extends JPanel{
     private JLabel logo, txtDate;
     private JLabel label[] = new JLabel[12];
-    private JLabel panel[] = new JLabel[4];
+    private JLabel panel[] = new JLabel[5];
     private JLabel txtLabel[] = new JLabel[5];
-    private JTextField txt[] = new JTextField[4];
-    private JButton button[] = new JButton[6];
+    private JTextField txt[] = new JTextField[5];
+    private JButton button[] = new JButton[7];
     private JScrollPane scrollPane;
     private JPanel batchesContainer;
-    private FeedingLogDAO feedLogDAO = new FeedingLogDAO();
     private JComboBox<ComboItem> cbBatchName;
+    private Consumer<DailyFeedLog> onEditCallback;
+    private AppController controller;
+
+    public void setOnEdit(Consumer<DailyFeedLog> callback){
+        this.onEditCallback = callback;
+    }
 
     public DailyLogs(MainFrame parent){
         setLayout(null);
@@ -40,6 +50,7 @@ public class DailyLogs extends JPanel{
         panel[2] = DisplayHelper.parsingImg("/resources/images/RecentLog.png", 420, 440, 817, 251);
 
         panel[3] = DisplayHelper.parsingSvg("/resources/images/DailyLogsClicked.svg", 32, 287, 301, 47);
+        panel[4] = DisplayHelper.parsingSvg("/resources/images/Search_Bar.svg", 950, 448, 225, 37);
 
         button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/DashboardNotClicked.svg", 187, "Dashboard");
         button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Analytics_NotClicked.svg", 387, "Analytics");
@@ -58,6 +69,22 @@ public class DailyLogs extends JPanel{
 
         button[5] = DisplayHelper.buttonSvg("/resources/images/ClearLog.svg", 980, 390, 250, 42);
         button[5].addActionListener(e -> clearField());
+
+        button[6] = new JButton();
+        button[6].setBounds(950, 448, 37, 37);
+        button[6].setOpaque(false);
+        button[6].setContentAreaFilled(false);
+        button[6].setBorderPainted(false);
+        button[6].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button[6].addActionListener(e -> {
+            String searchBatch = txt[4].getText().replaceAll("\\s+", "");
+            if (searchBatch.isEmpty()) {
+                loadRecentLogs();
+                return; 
+            }
+            String finalSearch = searchBatch.substring(0, 1).toUpperCase() + searchBatch.substring(1);
+            searchLog(finalSearch);
+        });
 
         label[0] = DisplayHelper.fieldLabel(this,"Date: ", 20, 440, 44, 225, 28);
         label[1] = DisplayHelper.fieldLabel(this,"Feed Input and Environmental Data ", 24, 440, 94, 455, 28);
@@ -84,6 +111,8 @@ public class DailyLogs extends JPanel{
         txt[1] = DisplayHelper.textField(545, 255, 215, 37);
         txt[2] = DisplayHelper.textField(875, 255, 215, 37);
         txt[3] = DisplayHelper.textField(715, 335, 215, 37);
+        txt[4] = DisplayHelper.textField(987, 448, 185, 37);
+        txt[4].addActionListener(e -> button[6].doClick());
 
         cbBatchName = DisplayHelper.jComboBox(545, 175, 215, 37);
         this.add(cbBatchName);
@@ -102,7 +131,6 @@ public class DailyLogs extends JPanel{
         
         scrollPane = DisplayHelper.scrollPane(batchesContainer, 440, 540, 770, 140);
 
-        loadRecentLogs();
         this.add(scrollPane);
         for(JTextField t:txt){
             this.add(t);
@@ -124,9 +152,9 @@ public class DailyLogs extends JPanel{
         JPanel rowPanel = new JPanel();
         rowPanel.setLayout(null);
         
-        rowPanel.setPreferredSize(new Dimension(750, 35));
-        rowPanel.setMaximumSize(new Dimension(750, 35));
-        rowPanel.setMinimumSize(new Dimension(750, 35)); 
+        rowPanel.setPreferredSize(new Dimension(750, 40));
+        rowPanel.setMaximumSize(new Dimension(750, 40));
+        rowPanel.setMinimumSize(new Dimension(750, 40)); 
         rowPanel.setOpaque(false);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -141,17 +169,25 @@ public class DailyLogs extends JPanel{
         JLabel lblTemp = DisplayHelper.tableLabel(String.format("%.1f °C", log.getWaterTemp()), 18, 590, 5, 120, 28);
         lblTemp.setForeground(new Color(0xFFFFFF));
 
+        JButton editButton = DisplayHelper.buttonSvg("/resources/images/EditButt.svg", 690, 0, 50, 40);
+        editButton.addActionListener(e -> {
+            if (onEditCallback != null) {
+                onEditCallback.accept(log);
+            }
+        });
+
         rowPanel.add(lblDate);
         rowPanel.add(lblBatch);
         rowPanel.add(lblFeed);
         rowPanel.add(lblTemp);
+        rowPanel.add(editButton);
 
         return rowPanel;
     }
 
     public void loadRecentLogs(){
         try {
-            List<DailyFeedLog> logs = feedLogDAO.getRecentLogs();
+            List<DailyFeedLog> logs = controller.getLogDAO().getRecentLogs();
 
             batchesContainer.removeAll();
 
@@ -173,8 +209,38 @@ public class DailyLogs extends JPanel{
         }
     }
 
+    public void searchLog(String query){
+        try {
+            List<DailyFeedLog> logs = controller.getLogDAO().searchLogs(query);
+            batchesContainer.removeAll();
+            if (logs == null || logs.isEmpty()) {
+                JLabel emptyLabel = DisplayHelper.fieldLabel(batchesContainer, "No logs found", 20,695, 550, 322, 28);
+                emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            
+                batchesContainer.add(Box.createRigidArea(new Dimension(0, 50)));
+                batchesContainer.add(emptyLabel);
+            } else {
+                for(DailyFeedLog log:logs){
+                    JPanel row = createLogRow(log);
+                    batchesContainer.add(row);
+                    batchesContainer.add(Box.createRigidArea(new Dimension(0,5)));
+                }  
+            }
+            batchesContainer.revalidate();
+            batchesContainer.repaint();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        
+    }
+
     public JComboBox<ComboItem> getBatchComboBox(){
         return cbBatchName;
+    }
+
+    public void setController(AppController controller){
+        this.controller = controller;
+        loadRecentLogs();
     }
 
     public JButton getSaveButton() {

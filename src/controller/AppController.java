@@ -242,9 +242,10 @@ public class AppController {
                 view.getBiWeeklySamplePanel().loadSamplingHistory();
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view, "Failed to harvest batch: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view, "Please enter a valid number", "Invalid input", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(view, "Failed to edit batch: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

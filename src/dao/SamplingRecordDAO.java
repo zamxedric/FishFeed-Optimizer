@@ -86,9 +86,10 @@ public class SamplingRecordDAO {
     }
 
     public boolean updateRecord(SamplingRecord record)throws SQLException{
-        String sql = "UPDATE sampling_records SET avg_weight_sample";
+        String sql = "UPDATE sampling_records SET avg_weight_sample WHERE sample_id = ?";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setDouble(1, record.getAvgWeightSample());
+            stm.setInt(2, record.getId());
 
             int rowsAffected = stm.executeUpdate();
             return rowsAffected > 0;

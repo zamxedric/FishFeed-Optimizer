@@ -273,6 +273,7 @@ public class DailyLogs extends JPanel{
 
                 return new DailyFeedLog(0, batchId, batchName, LocalDate.now(), feedAmount, feedCost, temp, mortality);
             } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number", "Invalid number", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
     }

@@ -191,7 +191,7 @@ public class Dashboard extends JPanel {
                     label[3].setText("Target Rate: " + String.format("%.0f%% of Body Weight", selectedBatch.getTargetFeedingRatePercentage() * 100));
                     label[6].setText("Recommended Ration: ");
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Failed to load batch data: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
                 }
             }});
 
@@ -202,7 +202,7 @@ public class Dashboard extends JPanel {
                 currentWeightToDisplay = latest.getAvgWeightSample();
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load record: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
             
         double progress = mathEngine.progressValue(batch.getTargetWeight(), batch.getAvgWeightPerSample(), currentWeightToDisplay);

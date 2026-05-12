@@ -82,8 +82,7 @@ public class DailyLogs extends JPanel{
                 loadRecentLogs();
                 return; 
             }
-            String finalSearch = searchBatch.substring(0, 1).toUpperCase() + searchBatch.substring(1);
-            searchLog(finalSearch);
+            searchLog(searchBatch);
         });
 
         label[0] = DisplayHelper.fieldLabel(this,"Date: ", 20, 440, 44, 225, 28);
@@ -100,11 +99,11 @@ public class DailyLogs extends JPanel{
         label[10] = DisplayHelper.fieldLabel(this,"Feed(kg)", 20, 830, 505, 96, 28);
         label[11] = DisplayHelper.fieldLabel(this,"Water Temp", 20, 1030, 505, 135, 28);
 
-        txtDate = DisplayHelper.fieldLabel(this,null, 20, 500, 44, 115, 28);
+        txtDate = DisplayHelper.fieldLabel(this,null, 20, 500, 44, 130, 28);
         txtDate.setForeground(new Color(0xFFFFFF));
         
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         txtDate.setText(today.format(formatter));
 
         txt[0] = DisplayHelper.textField(875, 175, 215, 37);
@@ -157,7 +156,7 @@ public class DailyLogs extends JPanel{
         rowPanel.setMinimumSize(new Dimension(750, 40)); 
         rowPanel.setOpaque(false);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         String dateStr = log.getLogDate().format(formatter);
 
         JLabel lblDate = DisplayHelper.tableLabel(dateStr, 18, 0, 5, 120, 28);
@@ -229,7 +228,7 @@ public class DailyLogs extends JPanel{
             batchesContainer.revalidate();
             batchesContainer.repaint();
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load batches: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         } 
         
     }

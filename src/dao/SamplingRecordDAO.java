@@ -16,7 +16,8 @@ public class SamplingRecordDAO {
         String sql = "INSERT INTO sampling_records(batch_id, sample_date, avg_weight_sample) VALUES (?,?,?)";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setInt(1, record.getBatchId());
-            stm.setObject(2, record.getSampleDate());
+            //stm.setObject(2, record.getSampleDate());
+            stm.setString(2, record.getSampleDate().toString());
             stm.setDouble(3, record.getAvgWeightSample());
 
             int rowsAffected = stm.executeUpdate();
@@ -86,7 +87,7 @@ public class SamplingRecordDAO {
     }
 
     public boolean updateRecord(SamplingRecord record)throws SQLException{
-        String sql = "UPDATE sampling_records SET avg_weight_sample WHERE sample_id = ?";
+        String sql = "UPDATE sampling_records SET avg_weight_sample = ? WHERE sample_id = ?";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setDouble(1, record.getAvgWeightSample());
             stm.setInt(2, record.getId());
@@ -100,7 +101,8 @@ public class SamplingRecordDAO {
         return new SamplingRecord(
             rs.getInt("sample_id"),
             rs.getInt("batch_id"),
-            rs.getObject("sample_date", LocalDate.class),
+            //rs.getObject("sample_date", LocalDate.class),
+            LocalDate.parse(rs.getString("sample_date")),
             rs.getDouble("avg_weight_sample")
         );
     }

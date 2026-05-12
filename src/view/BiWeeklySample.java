@@ -101,8 +101,7 @@ public class BiWeeklySample extends JPanel{
                 loadSamplingHistory();
                 return; 
             }
-            String finalSearch = searchBatch.substring(0, 1).toUpperCase() + searchBatch.substring(1);
-            searchRecord(finalSearch);
+            searchRecord(searchBatch);
         });
 
         label[0] = DisplayHelper.fieldLabel(this,"Bi-Weekly Sampling Entry", 24, 695, 94, 322, 28);
@@ -121,7 +120,7 @@ public class BiWeeklySample extends JPanel{
         txtDate.setForeground(new Color(0x000404));
         
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         txtDate.setText(today.format(formatter));
 
         cbBatchName = DisplayHelper.jComboBox(610, 175, 177, 37);
@@ -236,7 +235,7 @@ public class BiWeeklySample extends JPanel{
         rowPanel.setMinimumSize(new Dimension(756, 62)); 
         rowPanel.setOpaque(false);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         String dateStr = sample.getSampleDate().format(formatter);
 
         JLabel lblDate = DisplayHelper.tableLabel(dateStr, 18, 38, 9, 120, 28);
@@ -251,7 +250,7 @@ public class BiWeeklySample extends JPanel{
             }
             
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load batch name: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
         JLabel lblBatch = DisplayHelper.tableLabel(batchName, 18, 250, 9, 200, 28);
         lblBatch.setForeground(new Color(0xFFFFFF));
@@ -315,7 +314,7 @@ public class BiWeeklySample extends JPanel{
             batchesContainer.revalidate();
             batchesContainer.repaint();
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to load records: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -350,8 +349,10 @@ public class BiWeeklySample extends JPanel{
 
             return new SamplingRecord(batchId,LocalDate.now(),avgWeightPerSample);
         } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number", "Invalid number", JOptionPane.ERROR_MESSAGE);
             return null;
         } catch (ArithmeticException e) {
+            JOptionPane.showMessageDialog(this, "Sample size shouldn't be 0", "Invalid number", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }

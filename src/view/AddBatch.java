@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -74,7 +75,7 @@ public class AddBatch extends JPanel{
         txtDate.setForeground(new Color(0x000404));
         
         LocalDate today = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
         txtDate.setText(today.format(formatter));
 
         //Textfield Appearance
@@ -130,7 +131,11 @@ public class AddBatch extends JPanel{
         }
 
             try{
-                String batchName = inputString[0].replaceAll("\\s+", "");
+                if(inputString[0].replaceAll("\\s+", "").length() >= 9){
+                    JOptionPane.showMessageDialog(this, "Batch Name should be less than 9 characters", "Invalid batch name", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+                String batchName = inputString[0].replaceAll("\\s+", "").toUpperCase();
                 int stockCount = Integer.parseInt(inputString[1]);
                 double totalWeight = Double.parseDouble(inputString[2]);
                 double targetWeight = Double.parseDouble(inputString[3]);
@@ -138,8 +143,10 @@ public class AddBatch extends JPanel{
 
                 return new FishBatch(batchName, LocalDate.now(), stockCount, avgWeightPerSample, targetWeight,"Active");
             } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number", "Invalid number", JOptionPane.ERROR_MESSAGE);
                 return null;
             } catch (ArithmeticException e) {
+                JOptionPane.showMessageDialog(this, "Stock count shouldn't be 0", "Invalid number", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
     }

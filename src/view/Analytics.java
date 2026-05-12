@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.jfree.chart.JFreeChart;
@@ -186,7 +187,7 @@ public class Analytics extends JPanel{
         repaint();
 
     } catch (SQLException e) {
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Chart unavailable due to:" + e.getMessage(), "Unavailable chart", JOptionPane.ERROR_MESSAGE);
     }
     }
 

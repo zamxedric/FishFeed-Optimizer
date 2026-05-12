@@ -15,7 +15,8 @@ public class FishBatchDAO {
         String sql = "INSERT INTO batches(pond_name, start_date, initial_count, avg_weight_per_sample, target_weight) VALUES (?,?,?,?,?)";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setString(1, batch.getPondName());
-            stm.setObject(2, batch.getStockDate());
+            //stm.setObject(2, batch.getStockDate());
+            stm.setString(2, batch.getStockDate().toString());
             stm.setInt(3, batch.getInitFishCount());
             stm.setDouble(4, batch.getAvgWeightPerSample());
             stm.setDouble(5, batch.getTargetWeight());
@@ -43,7 +44,7 @@ public class FishBatchDAO {
     public List<FishBatch> getBatchNames() throws SQLException {
         List<FishBatch> activeBatches = new ArrayList<>();
         
-        String query = "SELECT batch_id, pond_name FROM batches WHERE status = 'Active'";
+        String query = "SELECT batch_id, pond_name FROM batches WHERE status = 'Active' COLLATE NOCASE";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -65,7 +66,7 @@ public class FishBatchDAO {
                      "(SELECT avg_weight_sample FROM sampling_records s " +
                      " WHERE s.batch_id = b.batch_id " +
                      " ORDER BY sample_date DESC LIMIT 1) AS latest_weight " +
-                     "FROM batches b WHERE b.status = 'Active'";
+                     "FROM batches b WHERE b.status = 'Active' COLLATE NOCASE";
 
         List<FishBatch> batches = new ArrayList<>();
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql); ResultSet rs = stm.executeQuery()){
@@ -112,7 +113,8 @@ public class FishBatchDAO {
         return new FishBatch(
             rs.getInt("batch_id"),
             rs.getString("pond_name"),
-            rs.getObject("start_date", LocalDate.class),
+            //rs.getObject("start_date", LocalDate.class),
+            LocalDate.parse(rs.getString("start_date")),
             rs.getInt("initial_count"),
             rs.getDouble("avg_weight_per_sample"),
             rs.getDouble("target_weight"),

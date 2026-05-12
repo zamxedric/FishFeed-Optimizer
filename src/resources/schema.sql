@@ -1,9 +1,5 @@
-DROP TABLE IF EXISTS batches;
-DROP TABLE IF EXISTS daily_logs;
-DROP TABLE IF EXISTS sampling_records;
-
 -- 1. Batches Table
-CREATE TABLE batches (
+CREATE TABLE IF NOT EXISTS batches(
     batch_id INTEGER PRIMARY KEY AUTOINCREMENT,
     pond_name TEXT NOT NULL,
     start_date TEXT NOT NULL, 
@@ -14,9 +10,10 @@ CREATE TABLE batches (
 );
 
 -- 2. Daily Logs Table
-CREATE TABLE daily_logs (
+CREATE TABLE IF NOT EXISTS daily_logs (
     log_id INTEGER PRIMARY KEY AUTOINCREMENT,
     batch_id INTEGER NOT NULL,
+    batch_name TEXT NOT NULL,
     log_date TEXT NOT NULL,
     feed_kg REAL DEFAULT NULL,
     feed_cost_kg REAL DEFAULT NULL,
@@ -28,10 +25,10 @@ CREATE TABLE daily_logs (
         ON DELETE CASCADE
 );
 
-CREATE INDEX idx_batch_logs ON daily_logs (batch_id);
+CREATE INDEX IF NOT EXISTS idx_batch_logs ON daily_logs (batch_id);
 
 -- 3. Sampling Records Table
-CREATE TABLE sampling_records (
+CREATE TABLE IF NOT EXISTS sampling_records (
     sample_id INTEGER PRIMARY KEY AUTOINCREMENT,
     batch_id INTEGER NOT NULL,
     sample_date TEXT NOT NULL,
@@ -42,4 +39,4 @@ CREATE TABLE sampling_records (
         ON DELETE CASCADE
 );
 
-CREATE INDEX idx_batch_samples ON sampling_records (batch_id);
+CREATE INDEX IF NOT EXISTS idx_batch_samples ON sampling_records (batch_id);

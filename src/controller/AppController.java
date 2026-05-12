@@ -79,6 +79,8 @@ public class AppController {
             JComboBox<ComboItem> biWeeklyCombo = view.getBiWeeklySamplePanel().getBatchesComboBox();
 
             analyticsCombo.removeAllItems();
+            dailyLogsCombo.removeAllItems(); 
+            biWeeklyCombo.removeAllItems();
 
             for(FishBatch b: batches){
                 ComboItem item = new ComboItem(b.getId(), b.getPondName());

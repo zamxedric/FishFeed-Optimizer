@@ -333,16 +333,33 @@ public class BiWeeklySample extends JPanel{
             JOptionPane.showMessageDialog(this, "Please select a Batch.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
+        int batchId = selectedBatch.getId();
+
+        try {
+            List<model.FishBatch> dueBatches = controller.getRecordDAO().getBatchesDueSampling();
+            boolean isDue = dueBatches.stream().anyMatch(b -> b.getId() == batchId);
+
+            if (!isDue) {
+                JOptionPane.showMessageDialog(this, 
+                    "This batch is not due for sampling yet. \nWait for the 14-day window to pass.", 
+                    "Sampling Restricted", 
+                    JOptionPane.WARNING_MESSAGE);
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         String inputString[] = {txt[0].getText(),txt[1].getText()};
         boolean isValid = ValidateInput.validateInput(inputString);
 
         if(!isValid){
+            JOptionPane.showMessageDialog(this, "Fields must be filled completely", "Missing input", JOptionPane.ERROR_MESSAGE);
             return null;
         }
         
         try {
-            int batchId = selectedBatch.getId();
             double sampleSize = Double.parseDouble(txt[0].getText());
             double totalWeight = Double.parseDouble(txt[1].getText());
             double avgWeightPerSample = totalWeight/sampleSize;

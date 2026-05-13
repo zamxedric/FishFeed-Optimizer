@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -164,7 +165,7 @@ public class AppController {
     }
 
     private void deleteBatch(FishBatch batch){
-        int confirm = JOptionPane.showConfirmDialog(view, "Are you sure you want to delete " + batch.getPondName() + "\nAll saved logs will be deleted",
+        int confirm = JOptionPane.showConfirmDialog(view, "Are you sure you want to delete " + batch.getPondName() + "\nAll saved logs & records will be deleted",
         "Delete Batch", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             try {
@@ -175,7 +176,7 @@ public class AppController {
                 view.getDashboardPanel().loadActiveBatches(); 
                 refreshBatchComboBoxes();
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(view, "Failed to harvest batch: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(view, "Failed to delete batch: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -253,8 +254,20 @@ public class AppController {
 
     private void attemptExit() {
         List<String> missingLogs = logDAO.getMissingLogsToday();
+        List<String> dueBatchesNames = new ArrayList<>();
 
-        if (!missingLogs.isEmpty()) {
+        try {
+            List<model.FishBatch> dueBatches = recordDAO.getBatchesDueSampling();
+            for(model.FishBatch batch: dueBatches){
+                dueBatchesNames.add("Sampling Due: " + batch.getPondName());
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(view, "Failed to load due batches: " + e.getMessage());
+        }
+        List<String> allReminders = new ArrayList<>(missingLogs);
+        allReminders.addAll(dueBatchesNames);
+
+        if (!allReminders.isEmpty()) {
             
             int choice = this.view.showReminderPopUp(missingLogs);
             

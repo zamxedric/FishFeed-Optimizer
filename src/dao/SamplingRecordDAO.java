@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.FishBatch;
 import model.SamplingRecord;
 
 public class SamplingRecordDAO {
@@ -16,7 +17,6 @@ public class SamplingRecordDAO {
         String sql = "INSERT INTO sampling_records(batch_id, sample_date, avg_weight_sample) VALUES (?,?,?)";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setInt(1, record.getBatchId());
-            //stm.setObject(2, record.getSampleDate());
             stm.setString(2, record.getSampleDate().toString());
             stm.setDouble(3, record.getAvgWeightSample());
 
@@ -86,6 +86,33 @@ public class SamplingRecordDAO {
             }
     }
 
+    public List<model.FishBatch> getBatchesDueSampling()throws SQLException{
+        List<model.FishBatch> dueBatches = new ArrayList<>();
+        String sql = "SELECT b.*, MAX(s.sample_date) as last_sample " +
+                     "FROM batches b " +
+                     "LEFT JOIN sampling_records s ON b.batch_id = s.batch_id " +
+                     "WHERE b.status = 'Active' COLLATE NOCASE " +
+                     "GROUP BY b.batch_id " +
+                     "HAVING (last_sample IS NULL AND julianday('now') - julianday(b.start_date) >= 14) " +
+                     "   OR (last_sample IS NOT NULL AND julianday('now') - julianday(last_sample) >= 14)";
+
+        try(Connection conn = DBConnection.getConnection(); PreparedStatement stm = conn.prepareStatement(sql); ResultSet rs = stm.executeQuery()){
+            while(rs.next()){
+                model.FishBatch batch = new FishBatch(
+                    rs.getInt("batch_id"),
+                    rs.getString("pond_name"),
+                    LocalDate.parse(rs.getString("stock_date")),
+                    rs.getInt("initial_count"),
+                    rs.getDouble("avg_weight_sample"),
+                    rs.getDouble("target_weight"),
+                    rs.getString("status")
+                );
+                dueBatches.add(batch);
+            }
+        }
+        return dueBatches;               
+    }
+
     public boolean updateRecord(SamplingRecord record)throws SQLException{
         String sql = "UPDATE sampling_records SET avg_weight_sample = ? WHERE sample_id = ?";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
@@ -101,7 +128,6 @@ public class SamplingRecordDAO {
         return new SamplingRecord(
             rs.getInt("sample_id"),
             rs.getInt("batch_id"),
-            //rs.getObject("sample_date", LocalDate.class),
             LocalDate.parse(rs.getString("sample_date")),
             rs.getDouble("avg_weight_sample")
         );

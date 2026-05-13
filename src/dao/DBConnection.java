@@ -12,8 +12,11 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.sql.SQLException;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.prefs.Preferences;
+import java.util.stream.Stream;
 
 public class DBConnection {
     private static final String KEY_NAME = "db_key_v2";
@@ -43,13 +46,6 @@ public class DBConnection {
         }
     }
 
-    // public static Connection getConnection() throws SQLException{
-    //     Connection connection = null;
-    //     connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/fishfeed_optimizer", "root", "");
-
-    //     return connection;
-    // }
-
     public static synchronized Connection getConnection() throws SQLException {
         try {
             Path dbDir = Paths.get(DB_DIR);
@@ -58,11 +54,11 @@ public class DBConnection {
             }
 
             if (!isInitialized) {
+                restoreDatabaseIfNeeded();
                 backupDatabase();
             }
 
             String dbPassword = getOrGeneratePassword();
-            System.out.println(dbPassword);
             Properties props = new Properties();
             props.setProperty("password", dbPassword); 
             props.setProperty("cipher", "sqlcipher");
@@ -70,7 +66,6 @@ public class DBConnection {
             Connection connection = DriverManager.getConnection(DB_URL, props);
 
             try (Statement stmt = connection.createStatement()) {
-                //stmt.execute("PRAGMA key = '" + dbPassword.replace("'", "''") + "';");
                 stmt.execute("PRAGMA foreign_keys = ON;");
             }
 
@@ -112,8 +107,6 @@ public class DBConnection {
                         }
                     }
                 }
-            } else {
-                System.err.println("CRITICAL ERROR: schema.sql could not be found in the classpath or the 'src/resources' folder. Tables were not created.");
             }
         } catch (Exception e) {
             throw new SQLException("Couldn't initialize database schema", e);
@@ -140,7 +133,7 @@ public class DBConnection {
         try {
             prefs.flush();
         } catch (Exception e) {
-            throw new RuntimeException("CRITICAL: Failed to securely save database key.", e);
+            throw new RuntimeException("Failed to securely save database key.", e);
         }
         return newPassword;
     } 
@@ -163,7 +156,28 @@ public class DBConnection {
             Files.copy(pathSource, backupFile, StandardCopyOption.REPLACE_EXISTING);
             
         } catch (Exception e) {
-            System.err.println("Failed to backup database: " + e.getMessage());
+            throw new RuntimeException("Failed to backup database: " + e.getMessage(), e);
+        }
+    }
+
+    private static void restoreDatabaseIfNeeded()   {
+        Path mainDBPath = Paths.get(DB_FILE_PATH);
+        if(Files.exists(mainDBPath)){
+            return;
+        }
+        Path backupDir = Paths.get(APP_DATA_DIR, "Backups");
+        if(!Files.exists(backupDir)){
+            return;
+        }
+
+        try (Stream<Path> backups = Files.list(backupDir)){
+            Optional<Path> latestBackup = backups.filter(p -> p.getFileName().toString().endsWith(".db")).max(Comparator.comparingLong(p -> p.toFile().lastModified()));
+
+            if(latestBackup.isPresent()){
+                Files.copy(latestBackup.get(), mainDBPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to restore database from backup: " + e.getMessage(), e);
         }
     }
 }

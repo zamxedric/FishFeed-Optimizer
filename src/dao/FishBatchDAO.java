@@ -15,7 +15,6 @@ public class FishBatchDAO {
         String sql = "INSERT INTO batches(pond_name, start_date, initial_count, avg_weight_per_sample, target_weight) VALUES (?,?,?,?,?)";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setString(1, batch.getPondName());
-            //stm.setObject(2, batch.getStockDate());
             stm.setString(2, batch.getStockDate().toString());
             stm.setInt(3, batch.getInitFishCount());
             stm.setDouble(4, batch.getAvgWeightPerSample());
@@ -113,7 +112,6 @@ public class FishBatchDAO {
         return new FishBatch(
             rs.getInt("batch_id"),
             rs.getString("pond_name"),
-            //rs.getObject("start_date", LocalDate.class),
             LocalDate.parse(rs.getString("start_date")),
             rs.getInt("initial_count"),
             rs.getDouble("avg_weight_per_sample"),

@@ -18,7 +18,6 @@ public class FeedingLogDAO {
     try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
         stm.setInt(1, log.getBatchId());
         stm.setString(2, log.getBatchName());
-        //stm.setObject(3, log.getLogDate());
         stm.setString(3, log.getLogDate().toString());
         stm.setDouble(4, log.getFeedGivenKg());
         stm.setDouble(5, log.getFeedCostPerKg());
@@ -93,7 +92,6 @@ public class FeedingLogDAO {
         String sql = "SELECT SUM(mortality) FROM daily_logs WHERE batch_id = ? AND log_date <= ?";
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setInt(1, batchId);
-            //stm.setObject(2, date);
             stm.setString(2, date.toString());
             try(ResultSet rs = stm.executeQuery()){
                 return rs.next() ? rs.getInt(1) : 0;
@@ -107,7 +105,6 @@ public class FeedingLogDAO {
         try (Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)) {
         
             stm.setInt(1, batchId);
-            //stm.setObject(2, date);
             stm.setString(2, date.toString());
 
             try (ResultSet rs = stm.executeQuery()) {
@@ -168,8 +165,6 @@ public class FeedingLogDAO {
         double totalInBetWeenFeed = 0;
         try(Connection con = DBConnection.getConnection(); PreparedStatement stm = con.prepareStatement(sql)){
             stm.setInt(1, batchId);
-            // stm.setObject(2, java.sql.Date.valueOf(start));
-            // stm.setObject( 3, java.sql.Date.valueOf(end));
             stm.setString(2, start.toString());
             stm.setString(3, end.toString());
 
@@ -214,7 +209,6 @@ public class FeedingLogDAO {
             rs.getInt("log_id"),
             rs.getInt("batch_id"),
             rs.getString("batch_name"),
-            //rs.getObject("log_date", LocalDate.class),
             LocalDate.parse(rs.getString("log_date")),
             rs.getDouble("feed_kg"),
             rs.getDouble("feed_cost_kg"),

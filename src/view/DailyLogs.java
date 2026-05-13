@@ -259,6 +259,7 @@ public class DailyLogs extends JPanel{
         boolean isValid = ValidateInput.validateInput(inputString);
 
         if(!isValid){
+            JOptionPane.showMessageDialog(this, "Fields must be filled completely", "Missing input", JOptionPane.ERROR_MESSAGE);
             return null;
         }
 

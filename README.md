@@ -35,7 +35,7 @@ Since this project does not use Maven/Gradle yet, you must manually add these `.
 1.  **FlatLaf (Core) v3.7**: [Download from Maven Central](https://repo1.maven.org/maven2/com/formdev/flatlaf/3.7/flatlaf-3.7.jar)
 2.  **FlatLaf (Extras) v3.0**: [Download from Maven Central](https://repo1.maven.org/maven2/com/formdev/flatlaf-extras/3.0/flatlaf-extras-3.0.jar)
 3.  **JFreeChart v1.5.6**: [Download from Maven Central](https://repo1.maven.org/maven2/org/jfree/jfreechart/1.5.6/jfreechart-1.5.6.jar)
-4.  **SQLite JDBC v3.51.2.0**: [Download from Maven Central](https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.45.2.0/sqlite-jdbc-3.45.2.0.jar) (Note: Adjusted to latest stable version)
+4.  **SQLite JDBC v3.51.2.0**: [Download from Maven Central](https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.45.2.0/sqlite-jdbc-3.45.2.0.jar) 
 5.  **SVG Salamander v1.1.5.3**: [Download from Maven Central](https://repo1.maven.org/maven2/com/kitfox/svg/svg-salamander/1.1.5.3/svg-salamander-1.1.5.3.jar)
 
 ### Installation

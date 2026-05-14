@@ -85,7 +85,7 @@ public class DBConnection {
         String sqlContent = null;
 
         try {
-            try (InputStream is = DBConnection.class.getResourceAsStream("/schema.sql")) {
+            try (InputStream is = DBConnection.class.getResourceAsStream("/resources/schema.sql")) {
                 if (is != null) {
                     sqlContent = new String(is.readAllBytes());
                 }

@@ -123,7 +123,6 @@ public class AddBatch extends JPanel{
 
     public FishBatch getBatchData(){
         String inputString[] = {txt[0].getText(),txt[1].getText(),txt[2].getText(),txt[3].getText()};
-    
         boolean isValid = ValidateInput.validateInput(inputString);
 
         if(!isValid){

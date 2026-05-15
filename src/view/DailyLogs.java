@@ -16,7 +16,7 @@ import controller.AppController;
 import java.awt.Cursor;
 
 import model.DailyFeedLog;
-
+import model.FishBatch;
 import util.ComboItem;
 import util.DisplayHelper;
 import util.ValidateInput;
@@ -270,6 +270,35 @@ public class DailyLogs extends JPanel{
                 double feedCost = Double.parseDouble(inputString[1]);
                 double temp = Double.parseDouble(inputString[2]);
                 int mortality = Integer.parseInt(inputString[3]);
+
+                try {
+                    FishBatch batch = controller.getBatchDAO().getBatchById(batchId); 
+                    int pastRecordedMortality = controller.getLogDAO().getTotalMortalityByBatch(batchId); 
+
+                    if (batch != null) {
+                        if (mortality > batch.getInitFishCount()) {
+                            JOptionPane.showMessageDialog(this, 
+                                "Inputted mortality (" + mortality + ") exceeds the initial stock (" + batch.getInitFishCount() + ").", 
+                                "Invalid Mortality", 
+                                JOptionPane.ERROR_MESSAGE);
+                            return null;
+                        }
+
+                    int currentSurvivors = batch.getEstimatedSurvivors(LocalDate.now(), pastRecordedMortality);
+                    if (mortality > currentSurvivors) {
+                        JOptionPane.showMessageDialog(this, 
+                            "Inputted mortality (" + mortality + ") exceeds current estimated survivors (" + currentSurvivors + ").", 
+                            "Invalid Mortality", 
+                            JOptionPane.ERROR_MESSAGE);
+                        return null;
+                    }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Error validating mortality against batch data.", "Database Error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+            }
+
 
                 return new DailyFeedLog(0, batchId, batchName, LocalDate.now(), feedAmount, feedCost, temp, mortality);
             } catch (NumberFormatException e) {

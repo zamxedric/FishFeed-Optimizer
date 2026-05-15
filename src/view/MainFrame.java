@@ -58,7 +58,6 @@ public class MainFrame extends JFrame{
         add(exitButton);
         cardLayout.show(mainPanel, "Dashboard");
 
-        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);
     }

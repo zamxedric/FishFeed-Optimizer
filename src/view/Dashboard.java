@@ -57,9 +57,13 @@ public class Dashboard extends JPanel {
         panel[3] = DisplayHelper.parsingSvg("/resources/images/Dashboard_Clicked.svg", 32, 187, 301, 47);
 
         button[0] = DisplayHelper.setupSidebar(parent, "/resources/images/Daily_Logs_Not_Clicked.svg", 287, "DailyLogs");
+        button[0].addActionListener(e -> button[5].doClick());
         button[1] = DisplayHelper.setupSidebar(parent, "/resources/images/Analytics_NotClicked.svg", 387, "Analytics");
+        button[0].addActionListener(e -> button[5].doClick());
         button[2] = DisplayHelper.setupSidebar(parent, "/resources/images/Add_NotClicked.svg", 487, "AddBatch");
+        button[2].addActionListener(e -> button[5].doClick());
         button[3] = DisplayHelper.setupSidebar(parent, "/resources/images/Bi_NotClicked.svg", 587, "BiWeeklySample");
+        button[3].addActionListener(e -> button[5].doClick());
 
         button[4] = DisplayHelper.buttonSvg("/resources/images/Calculate.svg", 430, 635, 250, 42);
         button[4].addActionListener(e -> {
@@ -67,6 +71,32 @@ public class Dashboard extends JPanel {
                 JOptionPane.showMessageDialog(this, "Please select an active batch!");
                 return;
             }
+
+            boolean isTempSelected = false;
+            for (JRadioButton rb : tempButton) {
+                if (rb != null && rb.isSelected()) {
+                    isTempSelected = true;
+                    break;
+                }
+            }
+
+            boolean isWeatherSelected = false;
+            for (JRadioButton rb : weatherButton) {
+                if (rb != null && rb.isSelected()) {
+                    isWeatherSelected = true;
+                    break;
+                }
+            }
+
+            if (!isTempSelected || !isWeatherSelected) {
+                JOptionPane.showMessageDialog(this, 
+                    "Please select both a Water Temperature and a Weather condition!", 
+                    "Missing Selection", 
+                    JOptionPane.WARNING_MESSAGE);
+                return; 
+            }
+
+
             try{
                 double selectedTemp = 1.0;
                     for (JRadioButton rb : tempButton) {
@@ -96,8 +126,13 @@ public class Dashboard extends JPanel {
             label[2].setText("Estimated Biomass:");
             label[3].setText("Target Rate:");
             label[6].setText("Recommended Ration: "); 
-            tempButton[0].setSelected(true);
-            weatherButton[0].setSelected(true);
+
+            if (selectedPanel != null) {
+                selectedPanel.setBorder(null);
+                selectedPanel.repaint();
+                selectedPanel = null;
+            }
+            selectedBatch = null;
         });
 
         batchesContainer = new JPanel();
@@ -120,11 +155,11 @@ public class Dashboard extends JPanel {
         ButtonGroup waterTempGroup = new ButtonGroup();
         ButtonGroup weatherGroup = new ButtonGroup();
 
-        tempButton[0] = DisplayHelper.jRadioButton("26°C - 32°C", waterTempGroup, null, true, 950, 510, 147, 28, 1.0);
+        tempButton[0] = DisplayHelper.jRadioButton("26°C - 32°C", waterTempGroup, null, false, 950, 510, 147, 28, 1.0);
         tempButton[1] = DisplayHelper.jRadioButton("> 33°C", waterTempGroup, null, false, 1086, 510, 104, 28, 0.8);       
         tempButton[2] = DisplayHelper.jRadioButton("< 23°C", waterTempGroup, null, false, 950, 540, 104, 28, 0.6);
 
-        weatherButton[0] = DisplayHelper.jRadioButton("Sunny", weatherGroup, null, true, 950, 570, 104, 28, 1.0);
+        weatherButton[0] = DisplayHelper.jRadioButton("Sunny", weatherGroup, null, false, 950, 570, 104, 28, 1.0);
         weatherButton[1] = DisplayHelper.jRadioButton("Cloudy", weatherGroup, null, false, 1086, 570, 110, 28, 0.9);
         weatherButton[2] = DisplayHelper.jRadioButton("Rainy", weatherGroup, null, false, 950, 600, 104, 28, 0.7);
 

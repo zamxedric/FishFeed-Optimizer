@@ -24,6 +24,8 @@ public class Dashboard extends JPanel {
     private JButton button[] = new JButton[6];
     private JRadioButton tempButton[] = new JRadioButton[3];
     private JRadioButton weatherButton[] = new JRadioButton[3];
+    private ButtonGroup waterTempGroup = new ButtonGroup();
+    private ButtonGroup weatherGroup = new ButtonGroup();
     private JScrollPane scrollPane;
     private JPanel batchesContainer;
     private JPanel selectedPanel;
@@ -133,6 +135,9 @@ public class Dashboard extends JPanel {
                 selectedPanel = null;
             }
             selectedBatch = null;
+
+            weatherGroup.clearSelection();
+            waterTempGroup.clearSelection();
         });
 
         batchesContainer = new JPanel();
@@ -151,9 +156,6 @@ public class Dashboard extends JPanel {
         add(scrollPane);
 
         loadActiveBatches();
-
-        ButtonGroup waterTempGroup = new ButtonGroup();
-        ButtonGroup weatherGroup = new ButtonGroup();
 
         tempButton[0] = DisplayHelper.jRadioButton("26°C - 32°C", waterTempGroup, null, false, 950, 510, 147, 28, 1.0);
         tempButton[1] = DisplayHelper.jRadioButton("> 33°C", waterTempGroup, null, false, 1086, 510, 104, 28, 0.8);       
